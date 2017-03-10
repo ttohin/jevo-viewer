@@ -1,10 +1,3 @@
-//
-//  CellContext.cpp
-//  Komorki
-//
-//  Created by user on 02.03.17.
-//
-//
 
 #include "ObjectContext.h"
 #include "Logging.h"
@@ -12,7 +5,6 @@
 #include "PartialMap.h"
 #include "UIConfig.h"
 #include "SpriteBatch.h"
-
 
 namespace
 {
@@ -23,9 +15,7 @@ namespace jevo
 {
   namespace graphic
   {
-    
-    
-    uint ObjectContext::instanceCounter = 0;
+    std::uint32_t ObjectContext::instanceCounter = 0;
     
     ObjectContext::ObjectContext(PartialMapPtr _owner,
                              const cocos2d::Color3B& color,

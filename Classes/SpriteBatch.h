@@ -19,7 +19,7 @@ namespace jevo
     {
     public:
       
-      static uint instanceCounter;
+      static std::uint32_t instanceCounter;
       
       SpriteBatch();
       virtual ~SpriteBatch();

@@ -14,13 +14,11 @@ namespace jevo
 {
   namespace graphic
   {
-    uint PartialMap::instanceCounter = 0;
+    std::uint32_t PartialMap::instanceCounter = 0;
     
     PartialMap::PartialMap()
     {
       instanceCounter += 1;
-      
-      
     }
     
     PartialMap::~PartialMap()

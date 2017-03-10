@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "cocos2d.h"
 #include "Common.h"
 
 namespace jevo
@@ -21,7 +22,7 @@ namespace jevo
     {
     public:
       
-      static uint instanceCounter;
+      static std::uint32_t instanceCounter;
       
       using PartialMapPtr = std::shared_ptr<PartialMap>;
       

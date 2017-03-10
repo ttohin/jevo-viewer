@@ -21,7 +21,7 @@ namespace jevo
       
       using Ptr = std::shared_ptr<PartialMap>;
       
-      static uint instanceCounter;
+      static std::uint32_t instanceCounter;
       
       PartialMap();
       virtual ~PartialMap();

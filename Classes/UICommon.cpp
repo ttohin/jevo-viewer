@@ -31,7 +31,7 @@ namespace jevo
       return cocos2d::Vec2(vec.x * kSpritePosition, vec.y * kSpritePosition) + vector;
     }
     
-    cocos2d::Color3B randomColor(uint bottomValue, uint topValue)
+    cocos2d::Color3B randomColor(uint32_t bottomValue, uint32_t topValue)
     {
       int r = cRandABInt(bottomValue, topValue);
       int g = cRandABInt(bottomValue, topValue);

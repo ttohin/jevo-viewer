@@ -14,7 +14,7 @@ namespace jevo
     public:
       static SharedUIData* getInstance();
       
-      typedef std::unordered_map<uint, cocos2d::Rect> CellShapeTexturesMap;
+      typedef std::unordered_map<std::uint32_t, cocos2d::Rect> CellShapeTexturesMap;
 
       
       CellShapeTexturesMap m_textureMap;

@@ -13,7 +13,7 @@ namespace jevo
 {
   namespace graphic
   {
-    uint SpriteBatch::instanceCounter = 0;
+    std::uint32_t SpriteBatch::instanceCounter = 0;
     
     SpriteBatch::SpriteBatch()
     {

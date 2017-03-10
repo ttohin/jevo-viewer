@@ -3,6 +3,8 @@
 #include <functional>
 #include <string>
 #include <vector>
+#include <cstdint>
+#include <memory>
 
 namespace jevo
 {
@@ -10,7 +12,7 @@ namespace jevo
   
   typedef std::function<void(GreatPixel* pixel, bool& stop)> PerPixelFunc;
   
-  typedef int32_t PixelPos;
+  using PixelPos = std::int32_t;
 
   struct Rect;
   

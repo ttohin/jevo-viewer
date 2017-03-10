@@ -18,118 +18,28 @@
     <ClCompile Include="..\Classes\AppDelegate.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\AsyncMapLoader.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\CellCanvasSprite.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\CellDescriptor.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\CellShapes.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\CellShapesHelper.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\CellsLogic.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\Common.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\ConfigManager.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\DiamondSquareGenerator.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\GenomsGenerator.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\GlowMapOverlay.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\ListController.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\LoadConfigMenu.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\LoadingScene.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\MainMenu.cpp">
+    <ClCompile Include="..\Classes\MainScene.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Map.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\OptionsMenu.cpp">
+    <ClCompile Include="..\Classes\ObjectContext.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\PartialMap.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\PartialMapScene.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\PhysicalDescriptor.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\PixelDebugView.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\PixelDescriptor.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\PixelDescriptorProvider.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\PixelMap.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\PixelMapBackground.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\PixelMapContext.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\PixelMapLightOverlay.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\PixelMapPartial.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\PixelProviderConfig.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\SaveConfigMenu.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\ShaderLayer.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\ShapeAnalizer.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\ShapesGenerator.cpp">
+    <ClCompile Include="..\Classes\PartialMapsManager.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\SharedUIData.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\StaticLightsSprite.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\TerrainAnalizer.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\TerrainBatchSprite.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\TestSampleShapesScene.cpp">
+    <ClCompile Include="..\Classes\SpriteBatch.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\UICommon.cpp">
@@ -138,13 +48,10 @@
     <ClCompile Include="..\Classes\UIConfig.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Viewport.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Window.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\Utilities.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Viewport.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -152,61 +59,23 @@
     <ClInclude Include="main.h">
       <Filter>win32</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h" />
     <ClInclude Include="..\Classes\AppDelegate.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\AsyncMapLoader.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\AsyncPixelManager.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\b2Utilites.h">
+    <ClInclude Include="..\Classes\AsyncDiffReader.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Buffer2D.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\CellCanvasSprite.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\CellDescriptor.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\CellShapes.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\CellShapesHelper.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\CellsLogic.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\CellsParameters.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\Common.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\ConfigManager.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\DiamondSquareGenerator.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\GenomsGenerator.hpp">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\GlowMapOverlay.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\IFullScreenMenu.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\IPixelDescriptor.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\IPixelDescriptorProvider.h">
+    <ClInclude Include="..\Classes\json.hpp">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\ListController.h">
@@ -221,10 +90,13 @@
     <ClInclude Include="..\Classes\LoadingScene.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\MainMenu.h">
+    <ClInclude Include="..\Classes\Logging.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Map.h">
+    <ClInclude Include="..\Classes\MainScene.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\ObjectContext.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\OptionsMenu.h">
@@ -233,82 +105,19 @@
     <ClInclude Include="..\Classes\PartialMap.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\PartialMapScene.h">
+    <ClInclude Include="..\Classes\PartialMapsManager.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\PhysicalDescriptor.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\PixelDebugView.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\PixelDescriptor.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\PixelDescriptorProvider.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\PixelMap.hpp">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\PixelMapBackground.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\PixelMapContext.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\PixelMapLightOverlay.hpp">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\PixelMapPartial.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\PixelMapPartial.hpp">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\PixelProviderConfig.h">
+    <ClInclude Include="..\Classes\Random.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\SaveConfigMenu.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\ShaderLayer.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\ShapeAnalizer.hpp">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\ShapesGenerator.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\SharedUIData.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\StaticLightsSprite.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Statistic.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Statistic.hpp">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\TerrainAnalizer.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\TerrainBatchSprite.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\TerrainSprite.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\TestSampleShapesScene.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\TextButton.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\tinydir.h">
+    <ClInclude Include="..\Classes\SpriteBatch.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\UICommon.h">
@@ -323,10 +132,9 @@
     <ClInclude Include="..\Classes\Viewport.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Window.h">
+    <ClInclude Include="..\Classes\WorldModel.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc">

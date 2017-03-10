@@ -108,7 +108,7 @@ namespace jevo
         std::string filePath = m_wordkingFolder;
         std::stringstream stream;
         stream << std::setfill('0') << std::setw(4) << fileIndex;
-        filePath += stream.str() + ".json";
+        filePath += "/" + stream.str() + ".json";
         
         m_updates.ReadFromFile(filePath);
         

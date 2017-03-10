@@ -9,10 +9,11 @@
 
 namespace jevo
 {
-  class IPixelWorld;
+  
   
   namespace graphic
   {
+    class ObjectContext;
     class SpriteBatch;
     
     class PartialMap
@@ -55,9 +56,12 @@ namespace jevo
       bool m_enableAnimations = false;
       bool m_enableFancyAnimations = false;
       
+      std::set<ObjectContext*> m_contexts; // for debug only
+      
     private:
 
       SpriteBatch* m_terrainBgSprite;
+      
     };
   }
 }

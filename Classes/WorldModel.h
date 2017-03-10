@@ -41,6 +41,20 @@ namespace jevo
     KeyFrameItem* destinationItem;
     Vec2 sourcePos;
     Vec2 destinationPos;
+    
+    std::string Description() const
+    {
+      std::stringstream ss;
+      ss <<
+      "[" <<
+      "WorldModelDiff: " << static_cast<const void*>(this) <<
+      " context: " << (context ? context->Description() : "null") <<
+      " destinationItem: " << static_cast<const void*>(destinationItem) <<
+      " src: " << sourcePos.Description() <<
+      " des: " << destinationPos.Description() <<
+      "]";
+      return ss.str();
+    }
   };
   
   using WorldModelDiffVect = std::vector<WorldModelDiff>;
@@ -80,6 +94,11 @@ namespace jevo
         
         x -= 1;
         y -= 1;
+        
+        if (16777216 <= colorValue)
+        {
+          colorValue = colorValue;
+        }
         
         if (colorValue != 0)
         {
@@ -180,12 +199,44 @@ namespace jevo
         auto soursePos = Vec2(diff.sourseX - 1, diff.sourseY - 1);
         auto destPos = Vec2(diff.destX - 1, diff.destY - 1);
         
+        if (soursePos == destPos)
+        {
+          if (diff.color != cocos2d::Color3B())
+          {
+            continue;
+          }
+          
+          assert(diff.color == cocos2d::Color3B());
+          auto sourceItem = GetItem(soursePos);
+          sourceItem->context = nullptr;
+          assert(sourceItem);
+          
+          WorldModelDiff resultDiff;
+          resultDiff.context = sourceItem->context;
+          resultDiff.sourcePos = soursePos;
+          resultDiff.destinationPos = destPos;
+          resultDiff.destinationItem = sourceItem;
+          resultDiff.type = DiffType::Delete;
+          
+          result.push_back(resultDiff);
+          
+          continue;
+        }
+        
+        assert(diff.color != cocos2d::Color3B());
+        assert(soursePos != destPos);
+        
         auto sourceItem = GetItem(soursePos);
         assert(sourceItem);
         auto destItem = GetItem(destPos);
         assert(destItem);
         
+        assert(diff.color == sourceItem->color);
+        assert(!destItem->context);
+        
+        destItem->color = sourceItem->color;
         destItem->context = sourceItem->context;
+        sourceItem->color = cocos2d::Color3B();
         sourceItem->context = nullptr;
         
         WorldModelDiff resultDiff;

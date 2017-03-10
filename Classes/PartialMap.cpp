@@ -30,6 +30,8 @@ namespace jevo
       m_background->removeAllChildren();
       m_background->removeFromParentAndCleanup(true);
       m_terrainBgSprite->removeFromParentAndCleanup(true);
+      
+      LOG_W("%s %s instanceCounter: %d", __FUNCTION__, Description().c_str(), PartialMap::instanceCounter);
     }
     
     bool PartialMap::Init(int a,
@@ -73,6 +75,8 @@ namespace jevo
       
       if (kRandomColorPerPartialMap)
         bgSprite->setColor(randomColor(230, 255));
+      
+      LOG_W("%s %s instanceCounter: %d", __FUNCTION__, Description().c_str(), PartialMap::instanceCounter);
       
       return true;
     }

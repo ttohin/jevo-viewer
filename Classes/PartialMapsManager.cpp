@@ -30,6 +30,11 @@ namespace jevo
                                     const WorldModelDiffVect &worldUpdate,
                                     float animationDuration)
     {
+      static int counter = 0;
+      std::cout << "ttnum " << counter << std::endl;
+      std::cout << m_visibleArea.Description() << std::endl;
+      counter += 1;
+      
       for (auto& m : mapsToRemove)
       {
         
@@ -45,19 +50,32 @@ namespace jevo
         auto map = CreateMap(createMapArg);
       }
       
+
+      
       for (const auto& u : worldUpdate)
       {
+        std::cout << u.Description() << std::endl;
+        
         Vec2 initialPos = u.sourcePos;
         
         DiffType type = u.type;
-        assert(type == DiffType::Move);
         
         Vec2 destinationPos = initialPos;
         
         ObjectContextPtr context = u.context;
         
+        if (context && u.destinationItem->context)
+        {
+          assert(context == u.destinationItem->context);
+        }
+        
         if(type == DiffType::Move)
         {
+          if (!context)
+            continue;
+          
+          assert(u.context == u.destinationItem->context);
+          
           destinationPos = u.destinationPos;
         }
         
@@ -66,17 +84,17 @@ namespace jevo
         
         if (!initialMap && !destinationMap)
         {
-          DeleteFromMap(u.destinationItem, initialMap);
+          assert(!context);
           continue;
         }
         
-        // if cell is going outside viewport - just remove it
-        if (destinationPos != initialPos && destinationMap == nullptr)
+        if (!destinationMap)
         {
+          assert(context);
+          LOG_W("cell is going to outside %s %s %s", __FUNCTION__, destinationPos.Description().c_str(), u.destinationItem->context->Description().c_str());
           DeleteFromMap(u.destinationItem, initialMap);
           continue;
         }
-      
         
         if (type == DiffType::Move)
         {
@@ -90,8 +108,7 @@ namespace jevo
                                           mapForAction);
           }
           
-          if (!context)
-            continue;
+          assert(context);
           
           int steps = 0;          
           Move(context,
@@ -117,6 +134,24 @@ namespace jevo
           DeleteFromMap(u.destinationItem, initialMap);
         }
         
+      }
+      
+      auto size = m_worldModel->GetSize();
+      for (int i = 0; i < size.x; ++i)
+      {
+        for (int j = 0; j < size.y; ++j)
+        {
+          auto pos = Vec2(i, j);
+          
+          auto pd = m_worldModel->GetItem(pos);
+          assert(pd);
+          if (!pos.In(m_visibleArea))
+          {
+            assert(!pd->context);
+          }
+          
+
+        }
       }
       
       auto instanceCounter = PartialMap::instanceCounter;
@@ -153,6 +188,8 @@ namespace jevo
           CreateObjectContext(pd, pos, map);
         }
       }
+      
+      LOG_W("PartialMapsManager::CreateMap. %s", map->Description().c_str());
       
       return map;
     }
@@ -277,8 +314,29 @@ namespace jevo
       return cell->context;
     }
     
+    void PartialMapsManager::PrintMap()
+    {
+      auto size = m_worldModel->GetSize();
+      for (int i = 0; i < size.x; ++i)
+      {
+        for (int j = 0; j < size.y; ++j)
+        {
+          auto pos = Vec2(i, j);
+          
+          auto pd = m_worldModel->GetItem(pos);
+          assert(pd);
+          if (pd->context)
+            LOG_W("%s %s %s", __FUNCTION__, pos.Description().c_str(), pd->context->Description().c_str());
+          else
+            LOG_W("%s %s null", __FUNCTION__, pos.Description().c_str());
+        }
+      }
+    }
+    
     void PartialMapsManager::RemoveMap(const PartialMapPtr& map)
     {
+      
+      
       for (int i = map->m_a1; i < map->m_a2; ++i)
       {
         for (int j = map->m_b1; j < map->m_b2; ++j)
@@ -292,6 +350,12 @@ namespace jevo
             pd->context = nullptr;
           }
         }
+      }
+      
+      if(!map->m_contexts.empty())
+      {
+        PrintMap();
+        assert(0);
       }
     }
 
@@ -316,6 +380,7 @@ namespace jevo
     {
       assert(context);
       
+      context->tt_pos = dest;
       context->Move(source, dest, animationDuration*0.9*(steps + 1));
     }
   }

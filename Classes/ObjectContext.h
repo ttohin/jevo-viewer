@@ -53,6 +53,7 @@ namespace jevo
       cocos2d::Rect m_textureRect;
       PartialMapPtr m_owner;
       uint32_t m_updateId = 0;
+      Vec2 tt_pos;
     };
   }
 }

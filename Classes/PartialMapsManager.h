@@ -48,6 +48,7 @@ namespace jevo
     private:
       using GraphicContextList = std::list<ObjectContext*>;
       
+      void PrintMap();
       PartialMapPtr GetMap(Vec2ConstRef pos);
       PartialMapPtr CreateMap(const CreateMapArg& args);
       ObjectContextPtr CreateObjectContext(KeyFrameItem* cell,

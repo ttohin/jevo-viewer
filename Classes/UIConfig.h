@@ -28,8 +28,8 @@ namespace jevo
   {
     const std::string workingFolder = cocos2d::FileUtils::getInstance()->getWritablePath() + "jevo";
     const float initialScale = 0.1;
-    const unsigned int numberOfUpdatesPerTick = 500;
-    const float updateTime = 1.2;
+    const unsigned int numberOfUpdatesPerTick = 1;
+    const float updateTime = 0.001;
   }
 }
 

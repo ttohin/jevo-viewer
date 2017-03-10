@@ -25,6 +25,10 @@ namespace jevo
     {
       instanceCounter += 1;
       m_owner = _owner;
+      
+      auto it = m_owner->m_contexts.insert(this);
+      assert(it.second);
+      
       m_posOffset = rect.origin - origin;
       m_offset = cocos2d::Vec2(0, 0); //= RandomVectorOffset();
       m_size = rect.size;
@@ -42,11 +46,15 @@ namespace jevo
       s->setPosition(spriteVector(m_pos + m_posOffset, m_offset + rectOffset));
       s->setTag(1);
       m_sprite = s;
+      
+      LOG_W("%s %s", __FUNCTION__, Description().c_str());
     }
     
     ObjectContext::~ObjectContext()
     {
+      LOG_W("%s %s", __FUNCTION__, Description().c_str());
       instanceCounter -= 1;
+      Destory(nullptr);
     }
     
     void ObjectContext::Move(Vec2ConstRef src, Vec2ConstRef dest, float animationTime)
@@ -78,6 +86,15 @@ namespace jevo
     
     void ObjectContext::BecomeOwner(PartialMapPtr _owner)
     {
+      LOG_W("%s %s", __FUNCTION__, Description().c_str());
+      
+      if (m_owner != _owner)
+      {
+        auto it = _owner->m_contexts.insert(this);
+        assert(it.second);
+        m_owner->m_contexts.erase(this);
+      }
+      
       m_sprite->retain();
       m_sprite->removeFromParentAndCleanup(true);
       _owner->m_cellMap->addChild(m_sprite);
@@ -89,10 +106,17 @@ namespace jevo
     
     void ObjectContext::Destory(PartialMapPtr _owner)
     {
+      LOG_W("%s %s", __FUNCTION__, Description().c_str());
+      
+      if (!m_owner)
+        return;
+      
+      m_owner->m_contexts.erase(this);
+      
       assert(m_sprite);
       m_owner->m_cellMap->RemoveSprite(m_sprite);
       m_owner = nullptr;
-    }
+    } 
     
     void ObjectContext::Attack(const Vec2& pos, const Vec2& attackOffset, float animationDuration)
     {
@@ -165,6 +189,7 @@ namespace jevo
       ss <<
       "[" <<
       static_cast<const void*>(this) <<
+      " owner: " << static_cast<const void*>(m_owner ? m_owner.get() : NULL) <<
       "]";
       return ss.str();
     }

@@ -5,18 +5,20 @@
 #include <thread>
 #include <mutex>
 #include <condition_variable>
-#include "json.hpp"
+#include "json_safe.hpp"
 #include "UICommon.h"
+#include "Common.h"
+#include "Utilities.h"
 
 namespace jevo
 {
   class DiffItem
   {
   public:
-    uint sourseX = 0;
-    uint sourseY = 0;
-    uint destX = 0;
-    uint destY = 0;
+    PixelPos sourseX = 0;
+    PixelPos sourseY = 0;
+    PixelPos destX = 0;
+    PixelPos destY = 0;
     cocos2d::Color3B color;
   };
   
@@ -101,11 +103,7 @@ namespace jevo
           m_performUpdate = false;
         }
         
-        struct timeval tv;
-        struct timeval start_tv;
-        gettimeofday(&start_tv, NULL);
         m_lastUpdateDuration = 0.0;
-        
         
         std::string filePath = m_wordkingFolder;
         std::stringstream stream;
@@ -114,13 +112,9 @@ namespace jevo
         
         m_updates.ReadFromFile(filePath);
         
-        gettimeofday(&tv, NULL);
-        double lastUpdateDuration = (tv.tv_sec - start_tv.tv_sec) + (tv.tv_usec - start_tv.tv_usec) / 1000000.0;
-        
         {
           std::lock_guard<std::mutex> lk(m_lock);
           m_inProccess = false;
-          m_lastUpdateDuration = lastUpdateDuration;
         }
       }
     }

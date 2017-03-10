@@ -3,14 +3,9 @@
 #include <time.h>
 #include <stdlib.h>
 #include "LoadingScene.h"
-
-#include "json.hpp"
-#include "AsyncDiffReader.h"
-#include <fstream>
-
+#include "Utilities.h"
 
 USING_NS_CC;
-
 
 AppDelegate::AppDelegate()
 {

@@ -3,7 +3,7 @@
 
 #include <fstream>
 #include <sstream>
-#include "json.hpp"
+#include "json_safe.hpp"
 #include "UICommon.h"
 #include "Buffer2D.h"
 #include "AsyncDiffReader.h"
@@ -74,9 +74,9 @@ namespace jevo
       
       for (const auto& item : json["region"])
       {
-        uint colorValue = item["c"];
-        uint x = item["x"];
-        uint y = item["y"];
+        PixelPos colorValue = item["c"];
+        PixelPos x = item["x"];
+        PixelPos y = item["y"];
         
         x -= 1;
         y -= 1;
@@ -97,8 +97,8 @@ namespace jevo
       return true;
     }
     
-    uint m_width;
-    uint m_height;
+    PixelPos m_width;
+    PixelPos m_height;
     
     BufferTypePtr m_buffer;
   };

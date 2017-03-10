@@ -135,6 +135,9 @@
     <ClInclude Include="..\Classes\WorldModel.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="..\Classes\json_safe.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="game.rc">

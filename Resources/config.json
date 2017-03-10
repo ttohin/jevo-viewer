@@ -1,0 +1,56 @@
+{
+  "map": {
+    "maxTerrainSize": 8,
+    "width": 300,
+    "height": 200
+  },
+  "greenCell": {
+    "health": 0,
+    "sleepTime": 0,
+    "attack": 0,
+    "passiveHealthChunkMin": 0,
+    "passiveHealthChunkMax": 0,
+    "healthPerAttack": 0,
+    "armor": 0,
+    "lifeTime": 0,
+    "percentOfMutations": 0
+  },
+  "orangeCell": {
+    "health": 0,
+    "sleepTime": 0,
+    "attack": 0,
+    "passiveHealthChunkMin": 0,
+    "passiveHealthChunkMax": 0,
+    "healthPerAttack": 0,
+    "armor": 0,
+    "lifeTime": 0,
+    "percentOfMutations": 0
+  },
+  "salatCell": {
+    "health": 0,
+    "sleepTime": 0,
+    "attack": 0,
+    "passiveHealthChunkMin": 0,
+    "passiveHealthChunkMax": 0,
+    "healthPerAttack": 0,
+    "armor": 0,
+    "lifeTime": 0,
+    "percentOfMutations": 0
+  },
+  "cyanCell": {
+    "health": 0,
+    "sleepTime": 0,
+    "attack": 0,
+    "passiveHealthChunkMin": 0,
+    "passiveHealthChunkMax": 0,
+    "healthPerAttack": 0,
+    "armor": 0,
+    "lifeTime": 0,
+    "percentOfMutations": 0
+  },
+  "percentOfCreatures": 0.1,
+  "percentOfOrange": 0.05,
+  "percentOfGreen": 0.2,
+  "percentOfSalat": 0.5,
+  "percentOfCyan": 0.4
+}

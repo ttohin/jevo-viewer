@@ -76,8 +76,8 @@ namespace jevo
       return GetInternal(x, y);
     }
     
-    typedef std::function<void(const S& x, const S& y, const T& value)> OnValue;
-    inline void ForEach(const OnValue& onValue) const
+    typedef std::function<void(const S& x, const S& y, T& value)> OnValue;
+    inline void ForEach(const OnValue& onValue)
     {
       for (int i = 0; i < width; ++i)
       {

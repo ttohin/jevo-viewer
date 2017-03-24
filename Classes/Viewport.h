@@ -66,6 +66,7 @@ namespace jevo
       bool m_performMove;
 
       std::shared_ptr<jevo::WorldModel> m_worldModel;
+      WorldModelDiffVect m_worldUpdateResult;
       PartialMapsManager m_mapManager;
 
       Rect tt_loadedPixelRect;

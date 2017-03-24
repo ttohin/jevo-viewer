@@ -24,6 +24,8 @@ namespace jevo
   public:
     cocos2d::Color3B color;
     ObjectContextPtr context;
+    uint64_t id;
+    Vec2 pos;
   };
   
   enum class DiffType
@@ -41,6 +43,7 @@ namespace jevo
     KeyFrameItem* destinationItem;
     Vec2 sourcePos;
     Vec2 destinationPos;
+    uint64_t id;
     
     std::string Description() const
     {
@@ -48,6 +51,7 @@ namespace jevo
       ss <<
       "[" <<
       "WorldModelDiff: " << static_cast<const void*>(this) <<
+      " id: " << id <<
       " context: " << (context ? context->Description() : "null") <<
       " destinationItem: " << static_cast<const void*>(destinationItem) <<
       " src: " << sourcePos.Description() <<
@@ -86,6 +90,11 @@ namespace jevo
       
       m_buffer = std::make_shared<BufferType>(m_width, m_height);
       
+      m_buffer->ForEach([](const int& x, const int& y, KeyFrameItem& value)
+                        {
+                          value.pos = Vec2(x, y);
+                        });
+      
       for (const auto& item : json["region"])
       {
         PixelPos colorValue = item["c"];
@@ -108,8 +117,7 @@ namespace jevo
           
           auto color = graphic::ColorFromUint(colorValue);
           bufferItem->color = color;
-          
-          color = cocos2d::Color3B(1, 1, 1);
+          bufferItem->id = nextId++;
         }
       }
       
@@ -120,6 +128,7 @@ namespace jevo
     PixelPos m_height;
     
     BufferTypePtr m_buffer;
+    uint16_t nextId = 1;
   };
   
   class WorldModel
@@ -157,11 +166,11 @@ namespace jevo
       return Vec2(m_map.m_width, m_map.m_height);
     }
     
-    WorldModelDiffVect PlayUpdates(unsigned int numberOfUpdates)
+    void PlayUpdates(unsigned int numberOfUpdates, WorldModelDiffVect& updates)
     {
       if (!m_pendingDiffs.empty())
       {
-        return PerformUpdates(numberOfUpdates);
+        return PerformUpdates(numberOfUpdates, updates);
       }
       
       if (m_diffReader.IsAvailable())
@@ -172,20 +181,18 @@ namespace jevo
         if (!m_pendingDiffs.empty())
         {
           m_currentPosInDiffs = 0;
-          return PerformUpdates(numberOfUpdates);
+          return PerformUpdates(numberOfUpdates, updates);
         }
         else
         {
           m_diffReader.LoadNext();
         }
       }
-      
-      return WorldModelDiffVect();
     }
     
-    WorldModelDiffVect PerformUpdates(unsigned int numberOfUpdates)
+    void PerformUpdates(unsigned int numberOfUpdates, WorldModelDiffVect& result)
     {
-      WorldModelDiffVect result;
+      result.clear();
       result.reserve(numberOfUpdates);
       
       assert(!m_pendingDiffs.empty());
@@ -199,54 +206,45 @@ namespace jevo
         auto soursePos = Vec2(diff.sourseX - 1, diff.sourseY - 1);
         auto destPos = Vec2(diff.destX - 1, diff.destY - 1);
         
-        if (soursePos == destPos)
-        {
-          if (diff.color != cocos2d::Color3B())
-          {
-            continue;
-          }
-          
-          assert(diff.color == cocos2d::Color3B());
-          auto sourceItem = GetItem(soursePos);
-          sourceItem->context = nullptr;
-          assert(sourceItem);
-          
-          WorldModelDiff resultDiff;
-          resultDiff.context = sourceItem->context;
-          resultDiff.sourcePos = soursePos;
-          resultDiff.destinationPos = destPos;
-          resultDiff.destinationItem = sourceItem;
-          resultDiff.type = DiffType::Delete;
-          
-          result.push_back(resultDiff);
-          
-          continue;
-        }
-        
-        assert(diff.color != cocos2d::Color3B());
-        assert(soursePos != destPos);
-        
         auto sourceItem = GetItem(soursePos);
         assert(sourceItem);
         auto destItem = GetItem(destPos);
         assert(destItem);
         
+        if (soursePos == destPos)
+        {
+          if (diff.color == cocos2d::Color3B())
+          {
+            // assert(sourceItem->id != 0);
+            if (sourceItem->id == 0)
+            {
+              continue;
+            }
+            
+            Delete(sourceItem, result);
+            continue;
+          }
+        }
+        
+        assert(diff.color != cocos2d::Color3B());
+        //assert(soursePos != destPos);
+        
+        if (soursePos == destPos)
+          continue;
+        
+        if (sourceItem->id == 0)
+        {
+          Create(diff.color, destItem, result);
+          continue;
+        }
+        
+        assert(sourceItem->id != 0);
+        assert(destItem->id == 0);
+        
         assert(diff.color == sourceItem->color);
         assert(!destItem->context);
         
-        destItem->color = sourceItem->color;
-        destItem->context = sourceItem->context;
-        sourceItem->color = cocos2d::Color3B();
-        sourceItem->context = nullptr;
-        
-        WorldModelDiff resultDiff;
-        resultDiff.context = destItem->context;
-        resultDiff.sourcePos = soursePos;
-        resultDiff.destinationPos = destPos;
-        resultDiff.destinationItem = destItem;
-        resultDiff.type = DiffType::Move;
-        
-        result.push_back(resultDiff);
+        Move(sourceItem, destItem, result);
       }
       
       m_currentPosInDiffs += playableUpdats;
@@ -257,7 +255,73 @@ namespace jevo
       }
       
       m_updateId += 1;
-      return result;
+    }
+    
+    void Move(KeyFrameItem* sourceItem, KeyFrameItem* destItem, WorldModelDiffVect& result)
+    {
+      assert(destItem);
+      assert(sourceItem->id != 0);
+      assert(destItem->id == 0);
+      assert(!destItem->context);
+      
+      destItem->color = sourceItem->color;
+      destItem->context = sourceItem->context;
+      sourceItem->color = cocos2d::Color3B();
+      sourceItem->context = nullptr;
+      destItem->id = sourceItem->id;
+      sourceItem->id = 0;
+      
+      WorldModelDiff resultDiff;
+      resultDiff.id = destItem->id;
+      resultDiff.context = destItem->context;
+      resultDiff.sourcePos = sourceItem->pos;
+      resultDiff.destinationPos = destItem->pos;
+      resultDiff.destinationItem = destItem;
+      resultDiff.type = DiffType::Move;
+      
+      result.push_back(resultDiff);
+    }
+    
+    void Delete(KeyFrameItem* sourceItem, WorldModelDiffVect& result)
+    {
+      assert(sourceItem->id != 0);
+      
+      ObjectContextPtr context = sourceItem->context;
+      uint64_t id = sourceItem->id;
+      
+      sourceItem->color = cocos2d::Color3B();
+      sourceItem->context = nullptr;
+      sourceItem->id = 0;
+      
+      WorldModelDiff resultDiff;
+      resultDiff.id = id;
+      resultDiff.context = context;
+      resultDiff.sourcePos = sourceItem->pos;
+      resultDiff.destinationPos = sourceItem->pos;
+      resultDiff.destinationItem = sourceItem;
+      resultDiff.type = DiffType::Delete;
+      
+      result.push_back(resultDiff);
+    }
+    
+    void Create(cocos2d::Color3B color, KeyFrameItem* sourceItem, WorldModelDiffVect& result)
+    {
+      assert(sourceItem->id == 0);
+      assert(sourceItem->color == cocos2d::Color3B());
+
+      assert(sourceItem->context == nullptr);
+      sourceItem->id = m_map.nextId++;
+      sourceItem->color = color;
+      
+      WorldModelDiff resultDiff;
+      resultDiff.id = sourceItem->id;
+      resultDiff.context = nullptr;
+      resultDiff.sourcePos = sourceItem->pos;
+      resultDiff.destinationPos = sourceItem->pos;
+      resultDiff.destinationItem = sourceItem;
+      resultDiff.type = DiffType::Add;
+      
+      result.push_back(resultDiff);
     }
     
     std::string m_workingFolder;

@@ -26,7 +26,8 @@ namespace jevo
       
       using PartialMapPtr = std::shared_ptr<PartialMap>;
       
-      ObjectContext(PartialMapPtr _owner,
+      ObjectContext(uint64_t id,
+                    PartialMapPtr _owner,
                   const cocos2d::Color3B& color,
                   const cocos2d::Rect& textureRect,
                   Vec2ConstRef origin,
@@ -54,6 +55,7 @@ namespace jevo
       PartialMapPtr m_owner;
       uint32_t m_updateId = 0;
       Vec2 tt_pos;
+      uint64_t m_id = 0;
     };
   }
 }

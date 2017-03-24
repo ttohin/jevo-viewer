@@ -374,7 +374,8 @@ namespace jevo
 
     void Viewport::Update(float updateTime, float& outUpdateTime)
     {
-      WorldModelDiffVect worldUpdateResult = m_worldModel->PlayUpdates(config::numberOfUpdatesPerTick);
+      m_worldUpdateResult.clear();
+      m_worldModel->PlayUpdates(config::numberOfUpdatesPerTick, m_worldUpdateResult);
 
       PartialMapsManager::RemoveMapArgs mapsToRemove;
       PartialMapsManager::CreateMapArgs newMaps;
@@ -405,7 +406,7 @@ namespace jevo
 
       m_mapManager.EnableAnimation(enableAnimations, enableFancyAnimaitons);
       m_mapManager.m_visibleArea = tt_loadedPixelRect;
-      m_mapManager.Update(newMaps, mapsToRemove, worldUpdateResult, updateTime);
+      m_mapManager.Update(newMaps, mapsToRemove, m_worldUpdateResult, updateTime);
 
       if (m_performMove)
       {

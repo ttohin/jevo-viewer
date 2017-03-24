@@ -17,12 +17,14 @@ namespace jevo
   {
     std::uint32_t ObjectContext::instanceCounter = 0;
     
-    ObjectContext::ObjectContext(PartialMapPtr _owner,
+    ObjectContext::ObjectContext(uint64_t id,
+                                 PartialMapPtr _owner,
                              const cocos2d::Color3B& color,
                              const cocos2d::Rect& textureRect,
                              Vec2ConstRef origin,
                              const Rect& rect)
     {
+      m_id = id;
       instanceCounter += 1;
       m_owner = _owner;
       
@@ -190,6 +192,7 @@ namespace jevo
       "[" <<
       static_cast<const void*>(this) <<
       " owner: " << static_cast<const void*>(m_owner ? m_owner.get() : NULL) <<
+      " id: " << m_id <<
       "]";
       return ss.str();
     }

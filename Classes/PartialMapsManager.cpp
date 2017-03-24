@@ -30,11 +30,6 @@ namespace jevo
                                     const WorldModelDiffVect &worldUpdate,
                                     float animationDuration)
     {
-      static int counter = 0;
-      std::cout << "ttnum " << counter << std::endl;
-      std::cout << m_visibleArea.Description() << std::endl;
-      counter += 1;
-      
       for (auto& m : mapsToRemove)
       {
         
@@ -50,12 +45,8 @@ namespace jevo
         auto map = CreateMap(createMapArg);
       }
       
-
-      
       for (const auto& u : worldUpdate)
       {
-        std::cout << u.Description() << std::endl;
-        
         Vec2 initialPos = u.sourcePos;
         
         DiffType type = u.type;
@@ -63,6 +54,8 @@ namespace jevo
         Vec2 destinationPos = initialPos;
         
         ObjectContextPtr context = u.context;
+        
+        assert(u.id != 0);
         
         if (context && u.destinationItem->context)
         {
@@ -74,7 +67,7 @@ namespace jevo
           if (!context)
             continue;
           
-          assert(u.context == u.destinationItem->context);
+          //assert(u.context == u.destinationItem->context);
           
           destinationPos = u.destinationPos;
         }
@@ -82,9 +75,18 @@ namespace jevo
         PartialMapPtr initialMap = GetMap(GetMapOriginFromPos(initialPos));
         PartialMapPtr destinationMap = GetMap(GetMapOriginFromPos(destinationPos));
         
+        LOG_W("context: %s, initialMap: %s, destinationMap: %s",
+              context ? context->Description().c_str() : "null",
+              initialMap ? initialMap->Description().c_str() : "null",
+              destinationMap ? destinationMap->Description().c_str() : "null");
+        
+        
         if (!initialMap && !destinationMap)
         {
-          assert(!context);
+          if (context)
+          {
+            assert(context->m_owner == nullptr);
+          }
           continue;
         }
         
@@ -121,6 +123,22 @@ namespace jevo
           continue;
         }
         
+        if (type == DiffType::Add)
+        {
+          assert(context == nullptr);
+          PartialMapPtr mapForAction = destinationMap ? destinationMap : initialMap;
+          context = CreateObjectContext(u.destinationItem,
+                                        initialPos,
+                                        mapForAction);
+          assert(context);
+          int steps = 0;
+          Move(context,
+               initialPos,
+               destinationPos,
+               mapForAction,
+               steps,
+               animationDuration);
+        }
         
         if (type == DiffType::Delete)
         {
@@ -290,14 +308,14 @@ namespace jevo
                                                              Vec2ConstRef pos,
                                                              const PartialMapPtr& map)
     {
+      if (cell->id == 0)
+        return nullptr;
+      
       if (cell->context)
       {
         cell->context->BecomeOwner(map);
         return cell->context;
       }
-      
-      if (cell->color == cocos2d::Color3B())
-        return nullptr;
       
       //TODO: get texture from file
 //      auto groupId = 0;
@@ -305,7 +323,8 @@ namespace jevo
       auto textureRect = cocos2d::Rect(0, 0, 1, 1);
       
       auto rect = Rect(pos, Vec2(1, 1));
-      cell->context = std::make_shared<ObjectContext>(map,
+      cell->context = std::make_shared<ObjectContext>(cell->id,
+                                                      map,
                                                     cell->color,
                                                     textureRect,
                                                     pos,
@@ -325,10 +344,20 @@ namespace jevo
           
           auto pd = m_worldModel->GetItem(pos);
           assert(pd);
+          
           if (pd->context)
-            LOG_W("%s %s %s", __FUNCTION__, pos.Description().c_str(), pd->context->Description().c_str());
-          else
-            LOG_W("%s %s null", __FUNCTION__, pos.Description().c_str());
+          {
+            assert(pd->id != 0);
+          }
+          
+          if (pd->context)
+          {
+            LOG_W("%s id: %llu %s %s", __FUNCTION__, pd->id, pos.Description().c_str(), pd->context->Description().c_str());
+          }
+          else if (pd->id != 0)
+          {
+            LOG_W("%s id: %llu %s null", __FUNCTION__, pd->id, pos.Description().c_str());
+          }
         }
       }
     }
@@ -379,6 +408,8 @@ namespace jevo
                                   float animationDuration)
     {
       assert(context);
+      
+      context->BecomeOwner(map);
       
       context->tt_pos = dest;
       context->Move(source, dest, animationDuration*0.9*(steps + 1));

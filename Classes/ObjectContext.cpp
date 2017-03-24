@@ -166,7 +166,27 @@ namespace jevo
       m_sprite->runAction(loop);
     }
     
-    void ObjectContext::CellDead()
+    void ObjectContext::Alert(cocos2d::Color3B alertColor)
+    {
+      auto s = m_owner->m_background->CreateSprite();
+      
+      s->setTextureRect(m_textureRect);
+      s->setPosition(m_sprite->getPosition());
+      s->setOpacity(130);
+      s->setScale(m_sprite->getScale() * 2);
+      s->setColor(alertColor);
+      
+      auto fade = cocos2d::FadeTo::create(5, 0);
+      auto bgLayer = m_owner->m_background;
+      auto removeSelf = cocos2d::CallFunc::create([bgLayer, s]()
+                                                  {
+                                                    bgLayer->RemoveSprite(s);
+                                                  });
+      
+      s->runAction(cocos2d::Sequence::createWithTwoActions(fade, removeSelf));
+    }
+    
+    void ObjectContext::FadeCell()
     {
       auto s = m_owner->m_background->CreateSprite();
       
@@ -174,6 +194,7 @@ namespace jevo
       s->setPosition(m_sprite->getPosition());
       s->setOpacity(130);
       s->setScale(m_sprite->getScale());
+      s->setColor(m_sprite->getColor());
 
       auto fade = cocos2d::FadeTo::create(5, 0);
       auto bgLayer = m_owner->m_background;

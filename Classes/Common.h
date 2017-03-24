@@ -7,11 +7,7 @@
 #include <memory>
 
 namespace jevo
-{
-  class GreatPixel;
-  
-  typedef std::function<void(GreatPixel* pixel, bool& stop)> PerPixelFunc;
-  
+{  
   using PixelPos = std::int32_t;
 
   struct Rect;

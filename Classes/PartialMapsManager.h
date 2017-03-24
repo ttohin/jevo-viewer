@@ -51,12 +51,12 @@ namespace jevo
       void PrintMap();
       PartialMapPtr GetMap(Vec2ConstRef pos);
       PartialMapPtr CreateMap(const CreateMapArg& args);
-      ObjectContextPtr CreateObjectContext(KeyFrameItem* cell,
+      ObjectContextPtr CreateObjectContext(GreatPixel* cell,
                                            Vec2ConstRef pos,
                                            const PartialMapPtr& map);
       void RemoveMap(const PartialMapPtr& map);
 
-      void DeleteFromMap(KeyFrameItem* cd, const PartialMapPtr& map);
+      void DeleteFromMap(GreatPixel* cd, const PartialMapPtr& map);
       void Move(ObjectContextPtr context,
                 const Vec2& source,
                 const Vec2& dest,

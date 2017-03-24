@@ -57,9 +57,9 @@ namespace jevo
         
         assert(u.id != 0);
         
-        if (context && u.destinationItem->context)
+        if (context && u.destinationPixel->context)
         {
-          assert(context == u.destinationItem->context);
+          assert(context == u.destinationPixel->context);
         }
         
         if(type == DiffType::Move)
@@ -94,7 +94,7 @@ namespace jevo
         {
           assert(context);
           LOG_W("cell is going to outside %s %s %s", __FUNCTION__, destinationPos.Description().c_str(), u.destinationItem->context->Description().c_str());
-          DeleteFromMap(u.destinationItem, initialMap);
+          DeleteFromMap(u.destinationPixel, initialMap);
           continue;
         }
         
@@ -105,7 +105,7 @@ namespace jevo
           // create context if it's needed
           if (!context)
           {
-            context = CreateObjectContext(u.destinationItem,
+            context = CreateObjectContext(u.destinationPixel,
                                           initialPos,
                                           mapForAction);
           }
@@ -119,6 +119,7 @@ namespace jevo
                mapForAction,
                steps,
                animationDuration);
+          context->FadeCell();
           
           continue;
         }
@@ -127,7 +128,7 @@ namespace jevo
         {
           assert(context == nullptr);
           PartialMapPtr mapForAction = destinationMap ? destinationMap : initialMap;
-          context = CreateObjectContext(u.destinationItem,
+          context = CreateObjectContext(u.destinationPixel,
                                         initialPos,
                                         mapForAction);
           assert(context);
@@ -138,6 +139,7 @@ namespace jevo
                mapForAction,
                steps,
                animationDuration);
+          context->Alert(cocos2d::Color3B::GREEN);
         }
         
         if (type == DiffType::Delete)
@@ -148,8 +150,9 @@ namespace jevo
           }
           
           assert(context);
-          context->CellDead();
-          DeleteFromMap(u.destinationItem, initialMap);
+          context->FadeCell();
+          context->Alert(cocos2d::Color3B::RED);
+          DeleteFromMap(u.destinationPixel, initialMap);
         }
         
       }
@@ -304,7 +307,7 @@ namespace jevo
     
     
     //********************************************************************************************
-    ObjectContextPtr PartialMapsManager::CreateObjectContext(KeyFrameItem* cell,
+    ObjectContextPtr PartialMapsManager::CreateObjectContext(GreatPixel* cell,
                                                              Vec2ConstRef pos,
                                                              const PartialMapPtr& map)
     {
@@ -389,7 +392,7 @@ namespace jevo
     }
 
     //********************************************************************************************
-    void PartialMapsManager::DeleteFromMap(KeyFrameItem* cd,
+    void PartialMapsManager::DeleteFromMap(GreatPixel* cd,
                                            const PartialMapPtr& map)
     {
       if (cd->context == nullptr)

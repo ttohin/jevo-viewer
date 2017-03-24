@@ -40,7 +40,8 @@ namespace jevo
       virtual void Destory(PartialMapPtr _owner) ;
       virtual void Attack(const Vec2& pos, const Vec2& offset, float animationTime) ;
       virtual void ToggleAnimation();
-      virtual void CellDead();
+      virtual void FadeCell();
+      virtual void Alert(cocos2d::Color3B alertColor);
       Vec2 GetPosInOwnerBase(Vec2ConstRef pos) const;
       std::string Description() const;
       

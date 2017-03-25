@@ -32,6 +32,9 @@ namespace jevo
     const float updateTime = 0.0001;
     const bool healthCheck = false;
     const bool removeFiles = false;
+    
+    const uint8_t fadeInitialOpacity = 100;
+    const float fadeDuration = 2.f; // seconds
   }
 }
 

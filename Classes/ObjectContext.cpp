@@ -192,11 +192,11 @@ namespace jevo
       
       s->setTextureRect(m_textureRect);
       s->setPosition(m_sprite->getPosition());
-      s->setOpacity(130);
+      s->setOpacity(config::fadeInitialOpacity);
       s->setScale(m_sprite->getScale());
       s->setColor(m_sprite->getColor());
 
-      auto fade = cocos2d::FadeTo::create(5, 0);
+      auto fade = cocos2d::FadeTo::create(config::fadeDuration, 0);
       auto bgLayer = m_owner->m_background;
       auto removeSelf = cocos2d::CallFunc::create([bgLayer, s]()
                                          {

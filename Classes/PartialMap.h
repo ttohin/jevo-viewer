@@ -9,8 +9,6 @@
 
 namespace jevo
 {
-  
-  
   namespace graphic
   {
     class ObjectContext;

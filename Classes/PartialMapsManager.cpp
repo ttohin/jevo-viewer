@@ -93,7 +93,7 @@ namespace jevo
       {
         if (context)
         {
-          assert(context->m_owner == nullptr);
+          DeleteFromMap(u.destinationPixel, initialMap);
         }
         return;
       }

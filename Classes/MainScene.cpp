@@ -44,8 +44,10 @@ bool MainScene::init(const jevo::graphic::Viewport::Ptr& viewport)
   Vec2 origin = Director::getInstance()->getVisibleOrigin();
   Size winSize = Director::getInstance()->getWinSize();
 
-  m_bg = Sprite::create("mapBackground.png");
+  m_bg = Sprite::create("blank.png");
+  m_bg->setColor(jevo::config::mainSceneBackground);
   m_bg->setAnchorPoint({0, 0});
+  m_bg->setScale(winSize.width, winSize.height);
   addChild(m_bg, -999);
 
   float bgAspect = 1.0;

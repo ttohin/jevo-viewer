@@ -73,8 +73,10 @@ namespace jevo
       superView->addChild(m_background, 0);
       superView->addChild(m_cellMap, 1);
       
-      if (kRandomColorPerPartialMap)
-        bgSprite->setColor(randomColor(230, 255));
+      if (config::randomColorPerPartialMap)
+        bgSprite->setColor(randomColor(10, 50));
+      else
+        bgSprite->setColor(config::mapBackground);
       
       LOG_W("%s %s instanceCounter: %d", __FUNCTION__, Description().c_str(), PartialMap::instanceCounter);
       

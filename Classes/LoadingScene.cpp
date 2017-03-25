@@ -1,5 +1,7 @@
 
 
+#include <chrono>
+#include <thread>
 #include <iostream>
 #include "LoadingScene.h"
 #include "MainScene.h"
@@ -33,8 +35,9 @@ namespace jevo
       auto origin = Director::getInstance()->getVisibleOrigin();
       
       m_info = CreateLabel("Loading", cocos2d::Vec2(visibleSize.width / 2, visibleSize.height / 2));
+      m_worldModel = std::make_shared<WorldModel>();
       
-      schedule(schedule_selector(LoadingScene::LoadViewModel), 0, 0, 0);
+      schedule(schedule_selector(LoadingScene::LoadViewModel), 2, CC_REPEAT_FOREVER, 0);
       
       return true;
     }
@@ -45,14 +48,11 @@ namespace jevo
     
     void LoadingScene::LoadViewModel(float dt)
     {
-      m_worldModel = std::make_shared<WorldModel>();
-      if (!m_worldModel->Init(jevo::config::workingFolder))
+      if (m_worldModel->Init(jevo::config::workingFolder))
       {
-        std::cout << FRED("Could not init world model") << std::endl;
-        exit(-1);
+        unschedule(schedule_selector(LoadingScene::LoadViewModel));
+        schedule(schedule_selector(LoadingScene::CreateViewport), 0, 0, 0);
       }
-      
-      schedule(schedule_selector(LoadingScene::CreateViewport), 0, 0, 0);
     }
     
     void LoadingScene::CreateViewport(float dt)

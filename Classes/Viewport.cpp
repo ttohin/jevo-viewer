@@ -163,6 +163,7 @@ namespace jevo
 
     Viewport::~Viewport()
     {
+      Destroy();
     }
 
     void Viewport::Test()
@@ -343,7 +344,6 @@ namespace jevo
 
     void Viewport::UpdateAsync(float& updateTime)
     {
-      
     }
 
     bool Viewport::IsAvailable()
@@ -353,6 +353,8 @@ namespace jevo
     
     bool Viewport::Destroy()
     {
+      m_worldUpdateResult.clear();
+      m_worldModel->Stop();
       return false;
     }
 
@@ -369,13 +371,12 @@ namespace jevo
     cocos2d::Node* Viewport::GetLightNode() const
     {
       return m_lightNode;
-
     }
 
     void Viewport::Update(float updateTime, float& outUpdateTime)
     {
       m_worldUpdateResult.clear();
-      m_worldModel->PlayUpdates(config::numberOfUpdatesPerTick, m_worldUpdateResult);
+      m_worldModel->PlayUpdates(config::numberOfUpdatesPerTick, tt_loadedPixelRect, m_worldUpdateResult);
 
       PartialMapsManager::RemoveMapArgs mapsToRemove;
       PartialMapsManager::CreateMapArgs newMaps;

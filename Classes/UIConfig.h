@@ -30,6 +30,8 @@ namespace jevo
     const float initialScale = 0.1;
     const unsigned int numberOfUpdatesPerTick = 1;
     const float updateTime = 0.0001;
+    const bool healthCheck = false;
+    const bool removeFiles = false;
   }
 }
 

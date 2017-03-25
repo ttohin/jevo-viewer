@@ -60,13 +60,15 @@ namespace jevo
   public:
     
     bool Init(const std::string& workingFolder);
+    bool Stop();
     GreatPixel* GetItem(Vec2ConstRef pos) const;
     Vec2 GetSize() const;
-    void PlayUpdates(unsigned int numberOfUpdates, WorldModelDiffVect& updates);
-    void PerformUpdates(unsigned int numberOfUpdates, WorldModelDiffVect& result);
-    void Move(GreatPixel* sourceItem, GreatPixel* destItem, WorldModelDiffVect& result);
-    void Delete(GreatPixel* sourceItem, WorldModelDiffVect& result);
-    void Create(cocos2d::Color3B color, GreatPixel* sourceItem, WorldModelDiffVect& result);
+    void PlayUpdates(unsigned int numberOfUpdates, Rect visibleRect, WorldModelDiffVect& updates);
+    void PerformUpdates(unsigned int numberOfUpdates, Rect visibleRect, WorldModelDiffVect& result);
+    
+    void Move(GreatPixel* sourceItem, GreatPixel* destItem, bool bypassResult, WorldModelDiffVect& result);
+    void Delete(GreatPixel* sourceItem, bool bypassResult, WorldModelDiffVect& result);
+    void Create(cocos2d::Color3B color, GreatPixel* sourceItem, bool bypassResult, WorldModelDiffVect& result);
     
     std::string m_workingFolder;
     BufferTypePtr m_map;

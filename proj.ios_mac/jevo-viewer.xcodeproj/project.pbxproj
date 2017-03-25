@@ -287,6 +287,8 @@
 				8F41F6DF1E857EA4002358C0 /* AsyncKeyFrameReader.cpp */,
 				8FEFC7831AD173B6001E97A7 /* WorldModel.h */,
 				8F41F6E31E857F55002358C0 /* WorldModel.cpp */,
+				8FC07C551E6B5009008780CE /* PartialMapsManager.cpp */,
+				8FC07C561E6B5009008780CE /* PartialMapsManager.h */,
 				8FDE8CEF1B239560000EE52C /* Utilities.h */,
 				8F473DD71E68C2200030CD52 /* Logging.h */,
 				8FFE7FDF1B9F522C008D2289 /* Buffer2D.h */,
@@ -346,8 +348,6 @@
 				8FC07C481E68D0F8008780CE /* PartialMap.cpp */,
 				8F473DD31E68BAF10030CD52 /* ObjectContext.cpp */,
 				8F473DD41E68BAF10030CD52 /* ObjectContext.h */,
-				8FC07C551E6B5009008780CE /* PartialMapsManager.cpp */,
-				8FC07C561E6B5009008780CE /* PartialMapsManager.h */,
 				8FC07C5B1E6C78BD008780CE /* SpriteBatch.cpp */,
 				8FC07C5C1E6C78BD008780CE /* SpriteBatch.h */,
 			);

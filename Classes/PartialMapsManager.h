@@ -40,6 +40,8 @@ namespace jevo
                   const RemoveMapArgs& mapsToRemove,
                   const WorldModelDiffVect& worldUpdate,
                   float animationDuration);
+      void ProccessUpdate(const WorldModelDiff& diff, float animationDuration);
+      void HealthCheck();
       
       const Maps& GetMaps() const;
       void EnableAnimation(bool enableAnimations, bool enableFancyAnimations);

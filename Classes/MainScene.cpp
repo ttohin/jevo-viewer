@@ -182,10 +182,12 @@ bool MainScene::init(const jevo::graphic::Viewport::Ptr& viewport)
   menuButton->setPosition(Vec2(kButtonSize/2.f, visibleSize.height - kButtonSize/2.f));
   menuButton->setScale(kButtonScale);
   m_menuButton = menuButton;
+  m_menuButton->setVisible(false);
 
   CreateSpeedToolBar();
   m_speedToolbar->setPosition(Vec2(origin.x + visibleSize.width,
                                    origin.y));
+  m_speedToolbar->setVisible(false);
 
   return true;
 }

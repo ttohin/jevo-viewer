@@ -47,115 +47,127 @@ namespace jevo
       
       for (const auto& u : worldUpdate)
       {
-        Vec2 initialPos = u.sourcePos;
+        ProccessUpdate(u, animationDuration);
+      }
+      
+      HealthCheck();
+    }
+    
+    void PartialMapsManager::ProccessUpdate(const WorldModelDiff& u, float animationDuration)
+    {
+      Vec2 initialPos = u.sourcePos;
+      
+      DiffType type = u.type;
+      
+      Vec2 destinationPos = initialPos;
+      
+      ObjectContextPtr context = u.context;
+      
+      assert(u.id != 0);
+      
+      if (context && u.destinationPixel->context)
+      {
+        assert(context == u.destinationPixel->context);
+      }
+      
+      if(type == DiffType::Move)
+      {
+        if (!context)
+          return;
         
-        DiffType type = u.type;
+        //assert(u.context == u.destinationItem->context);
         
-        Vec2 destinationPos = initialPos;
-        
-        ObjectContextPtr context = u.context;
-        
-        assert(u.id != 0);
-        
-        if (context && u.destinationPixel->context)
+        destinationPos = u.destinationPos;
+      }
+      
+      PartialMapPtr initialMap = GetMap(GetMapOriginFromPos(initialPos));
+      PartialMapPtr destinationMap = GetMap(GetMapOriginFromPos(destinationPos));
+      
+      LOG_W("context: %s, initialMap: %s, destinationMap: %s",
+            context ? context->Description().c_str() : "null",
+            initialMap ? initialMap->Description().c_str() : "null",
+            destinationMap ? destinationMap->Description().c_str() : "null");
+      
+      
+      if (!initialMap && !destinationMap)
+      {
+        if (context)
         {
-          assert(context == u.destinationPixel->context);
+          assert(context->m_owner == nullptr);
         }
+        return;
+      }
+      
+      if (!destinationMap)
+      {
+        assert(context);
+        LOG_W("cell is going to outside %s %s %s", __FUNCTION__, destinationPos.Description().c_str(), u.destinationItem->context->Description().c_str());
+        DeleteFromMap(u.destinationPixel, initialMap);
+        return;
+      }
+      
+      if (type == DiffType::Move)
+      {
+        PartialMapPtr mapForAction = destinationMap ? destinationMap : initialMap;
         
-        if(type == DiffType::Move)
+        // create context if it's needed
+        if (!context)
         {
-          if (!context)
-            continue;
-          
-          //assert(u.context == u.destinationItem->context);
-          
-          destinationPos = u.destinationPos;
-        }
-        
-        PartialMapPtr initialMap = GetMap(GetMapOriginFromPos(initialPos));
-        PartialMapPtr destinationMap = GetMap(GetMapOriginFromPos(destinationPos));
-        
-        LOG_W("context: %s, initialMap: %s, destinationMap: %s",
-              context ? context->Description().c_str() : "null",
-              initialMap ? initialMap->Description().c_str() : "null",
-              destinationMap ? destinationMap->Description().c_str() : "null");
-        
-        
-        if (!initialMap && !destinationMap)
-        {
-          if (context)
-          {
-            assert(context->m_owner == nullptr);
-          }
-          continue;
-        }
-        
-        if (!destinationMap)
-        {
-          assert(context);
-          LOG_W("cell is going to outside %s %s %s", __FUNCTION__, destinationPos.Description().c_str(), u.destinationItem->context->Description().c_str());
-          DeleteFromMap(u.destinationPixel, initialMap);
-          continue;
-        }
-        
-        if (type == DiffType::Move)
-        {
-          PartialMapPtr mapForAction = destinationMap ? destinationMap : initialMap;
-          
-          // create context if it's needed
-          if (!context)
-          {
-            context = CreateObjectContext(u.destinationPixel,
-                                          initialPos,
-                                          mapForAction);
-          }
-          
-          assert(context);
-          
-          int steps = 0;          
-          Move(context,
-               initialPos,
-               destinationPos,
-               mapForAction,
-               steps,
-               animationDuration);
-          context->FadeCell();
-          
-          continue;
-        }
-        
-        if (type == DiffType::Add)
-        {
-          assert(context == nullptr);
-          PartialMapPtr mapForAction = destinationMap ? destinationMap : initialMap;
           context = CreateObjectContext(u.destinationPixel,
                                         initialPos,
                                         mapForAction);
-          assert(context);
-          int steps = 0;
-          Move(context,
-               initialPos,
-               destinationPos,
-               mapForAction,
-               steps,
-               animationDuration);
-          context->Alert(cocos2d::Color3B::GREEN);
         }
         
-        if (type == DiffType::Delete)
-        {
-          if (!context)
-          {
-            continue;
-          }
-          
-          assert(context);
-          context->FadeCell();
-          context->Alert(cocos2d::Color3B::RED);
-          DeleteFromMap(u.destinationPixel, initialMap);
-        }
+        assert(context);
         
+        int steps = 0;
+        Move(context,
+             initialPos,
+             destinationPos,
+             mapForAction,
+             steps,
+             animationDuration);
+        context->FadeCell();
+        
+        return;
       }
+      
+      if (type == DiffType::Add)
+      {
+        assert(context == nullptr);
+        PartialMapPtr mapForAction = destinationMap ? destinationMap : initialMap;
+        context = CreateObjectContext(u.destinationPixel,
+                                      initialPos,
+                                      mapForAction);
+        assert(context);
+        int steps = 0;
+        Move(context,
+             initialPos,
+             destinationPos,
+             mapForAction,
+             steps,
+             animationDuration);
+        context->Alert(cocos2d::Color3B::GREEN);
+      }
+      
+      if (type == DiffType::Delete)
+      {
+        if (!context)
+        {
+          return;
+        }
+        
+        assert(context);
+        context->FadeCell();
+        context->Alert(cocos2d::Color3B::RED);
+        DeleteFromMap(u.destinationPixel, initialMap);
+      }
+    }
+    
+    void PartialMapsManager::HealthCheck()
+    {
+      if (!config::healthCheck)
+        return;
       
       auto size = m_worldModel->GetSize();
       for (int i = 0; i < size.x; ++i)
@@ -170,8 +182,6 @@ namespace jevo
           {
             assert(!pd->context);
           }
-          
-
         }
       }
       
@@ -317,6 +327,7 @@ namespace jevo
       if (cell->context)
       {
         cell->context->BecomeOwner(map);
+        cell->context->tt_pos = pos;
         return cell->context;
       }
       
@@ -332,6 +343,7 @@ namespace jevo
                                                     textureRect,
                                                     pos,
                                                     rect);
+      cell->context->tt_pos = pos;
       cell->context->ToggleAnimation();
       return cell->context;
     }
@@ -367,8 +379,6 @@ namespace jevo
     
     void PartialMapsManager::RemoveMap(const PartialMapPtr& map)
     {
-      
-      
       for (int i = map->m_a1; i < map->m_a2; ++i)
       {
         for (int j = map->m_b1; j < map->m_b2; ++j)
@@ -382,12 +392,6 @@ namespace jevo
             pd->context = nullptr;
           }
         }
-      }
-      
-      if(!map->m_contexts.empty())
-      {
-        PrintMap();
-        assert(0);
       }
     }
 

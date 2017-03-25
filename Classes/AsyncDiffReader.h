@@ -1,12 +1,14 @@
 
 #pragma once
 
+#include <cstdio>
 #include <fstream>
 #include <thread>
 #include <mutex>
 #include <condition_variable>
 #include "json_safe.hpp"
 #include "UICommon.h"
+#include "UIConfig.h"
 #include "Common.h"
 #include "Utilities.h"
 
@@ -83,8 +85,6 @@ namespace jevo
     {
       while (1)
       {
-        unsigned int fileIndex = 0;
-        
         {
           std::unique_lock<std::mutex> lk(m_lock);
           m_semaphore.wait(lk, [this]
@@ -97,8 +97,6 @@ namespace jevo
             return;
           }
           
-          fileIndex = m_fileIndex;
-          m_fileIndex += 1;
           m_inProccess = true;
           m_performUpdate = false;
         }
@@ -107,11 +105,18 @@ namespace jevo
         
         std::string filePath = m_wordkingFolder;
         std::stringstream stream;
-        stream << std::setfill('0') << std::setw(4) << fileIndex;
+        stream << std::setfill('0') << std::setw(4) << m_fileIndex;
         filePath += "/" + stream.str() + ".json";
         
-        m_updates.ReadFromFile(filePath);
-        
+        if (m_updates.ReadFromFile(filePath))
+        {
+          m_fileIndex += 1;
+          if (jevo::config::removeFiles)
+          {
+            std::remove(filePath.c_str());
+          }
+        }
+
         {
           std::lock_guard<std::mutex> lk(m_lock);
           m_inProccess = false;

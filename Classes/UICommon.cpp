@@ -9,10 +9,13 @@ namespace jevo
   {
     cocos2d::Color3B ColorFromUint(uint32_t color)
     {
-      uint8_t red = (color & 0x00FF0000) >> 16;
-      uint8_t green = (color & 0x0000FF00) >> 8;
-      uint8_t blue = (color & 0x000000FF) >> 0;
-      
+      uint8_t red = (color & 0x0000000F) >> 0;
+      uint8_t green = (color & 0x000000F0) >> 4;
+      uint8_t blue = (color & 0x00000F00) >> 8;
+      red *= 0x0f;
+      green *= 0x0f;
+      blue *= 0x0f;
+
       return cocos2d::Color3B(red, green, blue);
     }
     

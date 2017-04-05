@@ -1,19 +1,96 @@
 
 
 #include "WorldModel.h"
-#include "ObjectContext.h"
+#include "GraphicContext.h"
 #include "AsyncKeyFrameReader.h"
 
 namespace jevo
 {
+  Organizm::Organizm(GreatPixel* pos, Organizm::Id id, cocos2d::Color3B color)
+  : m_context(nullptr)
+  , m_color(color)
+  , m_id(id)
+  , m_pos(pos)
+  {
+    assert(m_pos);
+    assert(!m_pos->organizm);
+    assert(color != cocos2d::Color3B());
+    assert(m_id != UnknownOrgId);
+  }
+  
+  Organizm::~Organizm()
+  {
+    assert(m_pos->organizm.get() != this);
+  }
+  
+  void Organizm::Move(GreatPixel* pos)
+  {
+    assert(pos);
+    assert(!pos->organizm);
+    assert(pos != m_pos);
+    assert(m_pos->organizm.get() == this);
+    
+    pos->organizm = m_pos->organizm;
+    m_pos->organizm = nullptr;
+    
+    m_pos = pos;
+  }
+  
+  void Organizm::ChangeColor(cocos2d::Color3B color)
+  {
+    m_color = color;
+  }
+  
+  void Organizm::Delete()
+  {
+    m_pos->organizm = nullptr;
+  }
+  
+  Organizm::Id Organizm::GetId() const
+  {
+    return m_id;
+  }
+  
+  Vec2 Organizm::GetPosition() const
+  {
+    return m_pos->pos;
+  }
+  
+  const GraphicContextPtr& Organizm::GetGraphicContext() const
+  {
+    return m_context;
+  }
+  
+  void Organizm::SetGraphicContext(const GraphicContextPtr& context)
+  {
+    m_context = context;
+  }
+  
+  cocos2d::Color3B Organizm::GetColor() const
+  {
+    return m_color;
+  }
+  
+  std::string Organizm::Description() const
+  {
+    std::stringstream ss;
+    ss <<
+    "[" <<
+    "WorldModelDiff: " << static_cast<const void*>(this) <<
+    " id: " << m_id <<
+    " context: " << (m_context ? m_context->Description() : "null") <<
+    " pos: " << GetPosition().Description() <<
+    "]";
+    return ss.str();
+  }
+  
   std::string WorldModelDiff::Description() const
   {
     std::stringstream ss;
     ss <<
     "[" <<
     "WorldModelDiff: " << static_cast<const void*>(this) <<
-    " id: " << id <<
-    " context: " << (context ? context->Description() : "null") <<
+    " organizm: " << (organizm ? organizm->Description() : "null") <<
     " destinationItem: " << static_cast<const void*>(destinationPixel) <<
     " src: " << sourcePos.Description() <<
     " des: " << destinationPos.Description() <<
@@ -27,7 +104,7 @@ namespace jevo
     
     std::string keyframeFileName = m_workingFolder + "/keyframe.json";
     AsyncKeyFrameReader keyFrameReader;
-    if (!keyFrameReader.ReadFromFile(keyframeFileName, m_nextId, m_map))
+    if (!keyFrameReader.ReadFromFile(keyframeFileName, m_map))
     {
       return false;
     }
@@ -108,40 +185,21 @@ namespace jevo
       auto destItem = GetItem(destPos);
       assert(destItem);
       
-      if (soursePos == destPos)
+      Organizm::Id OrgId = diff.id == 0 ? EnergyId : diff.id;
+      
+      if (diff.action == "delete")
       {
-        if (diff.color == cocos2d::Color3B())
-        {
-          // assert(sourceItem->id != 0);
-          if (sourceItem->id == 0)
-          {
-            continue;
-          }
-          
-          Delete(sourceItem, bypassResult, result);
-          continue;
-        }
+        Delete(OrgId, sourceItem, bypassResult, result);
       }
-      
-      assert(diff.color != cocos2d::Color3B());
-      //assert(soursePos != destPos);
-      
-      if (soursePos == destPos)
-        continue;
-      
-      if (sourceItem->id == 0)
+      else if (diff.action == "add")
       {
-        Create(diff.color, destItem, bypassResult, result);
-        continue;
+        assert(diff.color != cocos2d::Color3B());
+        Create(OrgId, diff.color, destItem, bypassResult, result);
       }
-      
-      assert(sourceItem->id != 0);
-      assert(destItem->id == 0);
-      
-      assert(diff.color == sourceItem->color);
-      assert(!destItem->context);
-      
-      Move(sourceItem, destItem, bypassResult, result);
+      else if (diff.action == "move")
+      {
+        Move(OrgId, diff.color, sourceItem, destItem, bypassResult, result);
+      }
     }
     
     m_currentPosInDiffs += i;
@@ -154,25 +212,33 @@ namespace jevo
     m_updateId += 1;
   }
   
-  void WorldModel::Move(GreatPixel* sourceItem, GreatPixel* destItem, bool bypassResult, WorldModelDiffVect& result)
+  void WorldModel::Move(Organizm::Id orgId,
+                        cocos2d::Color3B color,
+                        GreatPixel* sourceItem,
+                        GreatPixel* destItem,
+                        bool bypassResult,
+                        WorldModelDiffVect& result)
   {
     assert(destItem);
-    assert(sourceItem->id != 0);
-    assert(destItem->id == 0);
-    assert(!destItem->context);
+    assert(sourceItem);
     
-    destItem->color = sourceItem->color;
-    destItem->context = sourceItem->context;
-    sourceItem->color = cocos2d::Color3B();
-    sourceItem->context = nullptr;
-    destItem->id = sourceItem->id;
-    sourceItem->id = 0;
+    OrganizmPtr organizm = sourceItem->organizm;
+    
+    // hack
+    // assert(organizm);
+    if (!organizm)
+    {
+      return Create(orgId, color, destItem, bypassResult, result);
+    }
+    
+    assert(organizm->GetId() == orgId);
+    
+    organizm->Move(destItem);
     
     if (bypassResult)
     {
       WorldModelDiff resultDiff;
-      resultDiff.id = destItem->id;
-      resultDiff.context = destItem->context;
+      resultDiff.organizm = organizm;
       resultDiff.sourcePos = sourceItem->pos;
       resultDiff.destinationPos = destItem->pos;
       resultDiff.destinationPixel = destItem;
@@ -182,22 +248,26 @@ namespace jevo
     }
   }
   
-  void WorldModel::Delete(GreatPixel* sourceItem, bool bypassResult, WorldModelDiffVect& result)
+  void WorldModel::Delete(Organizm::Id orgId, GreatPixel* sourceItem, bool bypassResult, WorldModelDiffVect& result)
   {
-    assert(sourceItem->id != 0);
+    assert(sourceItem);
     
-    ObjectContextPtr context = sourceItem->context;
-    uint64_t id = sourceItem->id;
+    OrganizmPtr organizm = sourceItem->organizm;
     
-    sourceItem->color = cocos2d::Color3B();
-    sourceItem->context = nullptr;
-    sourceItem->id = 0;
+    // hack
+    // assert(organizm);
+    
+    if (!organizm)
+    {
+      return;
+    }
+    
+    organizm->Delete();
     
     if (bypassResult)
     {
       WorldModelDiff resultDiff;
-      resultDiff.id = id;
-      resultDiff.context = context;
+      resultDiff.organizm = organizm;
       resultDiff.sourcePos = sourceItem->pos;
       resultDiff.destinationPos = sourceItem->pos;
       resultDiff.destinationPixel = sourceItem;
@@ -207,24 +277,48 @@ namespace jevo
     }
   }
   
-  void WorldModel::Create(cocos2d::Color3B color, GreatPixel* sourceItem, bool bypassResult, WorldModelDiffVect& result)
+  void WorldModel::Create(Organizm::Id orgId, cocos2d::Color3B color, GreatPixel* sourceItem, bool bypassResult, WorldModelDiffVect& result)
   {
-    assert(sourceItem->id == 0);
-    assert(sourceItem->color == cocos2d::Color3B());
+    assert(sourceItem);
     
-    assert(sourceItem->context == nullptr);
-    sourceItem->id = m_nextId++;
-    sourceItem->color = color;
+    auto organizm = std::make_shared<Organizm>(sourceItem, orgId, color);
+    sourceItem->organizm = organizm;
     
     if (bypassResult)
     {
       WorldModelDiff resultDiff;
-      resultDiff.id = sourceItem->id;
-      resultDiff.context = nullptr;
+      resultDiff.organizm = organizm;
       resultDiff.sourcePos = sourceItem->pos;
       resultDiff.destinationPos = sourceItem->pos;
       resultDiff.destinationPixel = sourceItem;
       resultDiff.type = DiffType::Add;
+      
+      result.push_back(resultDiff);
+    }
+  }
+  
+  void WorldModel::Paint(Organizm::Id orgId, cocos2d::Color3B color, GreatPixel* sourceItem, bool bypassResult, WorldModelDiffVect& result)
+  {
+    assert(sourceItem);
+    
+    OrganizmPtr organizm = sourceItem->organizm;
+    // hack
+    // assert(organizm);
+    if (!organizm)
+    {
+      return Create(orgId, color, sourceItem, bypassResult, result);
+    }
+    
+    organizm->ChangeColor(color);
+    
+    if (bypassResult)
+    {
+      WorldModelDiff resultDiff;
+      resultDiff.organizm = organizm;
+      resultDiff.sourcePos = sourceItem->pos;
+      resultDiff.destinationPos = sourceItem->pos;
+      resultDiff.destinationPixel = sourceItem;
+      resultDiff.type = DiffType::Paint;
       
       result.push_back(resultDiff);
     }

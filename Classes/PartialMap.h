@@ -11,7 +11,7 @@ namespace jevo
 {
   namespace graphic
   {
-    class ObjectContext;
+    class GraphicContext;
     class SpriteBatch;
     
     class PartialMap
@@ -50,11 +50,11 @@ namespace jevo
       SpriteBatch* m_cellMap;
       SpriteBatch* m_background;
       
-      // just holders for ObjectContexts
+      // just holders for GraphicContexts
       bool m_enableAnimations = false;
       bool m_enableFancyAnimations = false;
       
-      std::set<ObjectContext*> m_contexts; // for debug only
+      std::set<GraphicContext*> m_contexts; // for debug only
       
     private:
 

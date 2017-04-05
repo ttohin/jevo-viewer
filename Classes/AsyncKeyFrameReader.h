@@ -11,7 +11,6 @@ namespace jevo
   public:
     
     bool ReadFromFile(const std::string& fileName,
-                      CellId& initialCellId,
                       BufferTypePtr& buffer);
   };
 }

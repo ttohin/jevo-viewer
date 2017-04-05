@@ -13,20 +13,50 @@ namespace jevo
 {
   namespace graphic
   {
-    class ObjectContext;
+    class GraphicContext;
   }
   
   class AsyncKeyFrameReader;
   
-  using ObjectContextPtr = std::shared_ptr<graphic::ObjectContext>;
-  using CellId = uint64_t;
+  using GraphicContextPtr = std::shared_ptr<graphic::GraphicContext>;
+
+  class GreatPixel;
+  
+  class Organizm
+  {
+  public:
+    using Id = uint64_t;
+    
+    Organizm(GreatPixel* pos, Id id, cocos2d::Color3B color);
+    virtual ~Organizm();
+    void Move(GreatPixel* pos);
+    void ChangeColor(cocos2d::Color3B color);
+    void Delete();
+    
+    Id GetId() const;
+    Vec2 GetPosition() const;
+    const GraphicContextPtr& GetGraphicContext() const;
+    void SetGraphicContext(const GraphicContextPtr& context);
+    cocos2d::Color3B GetColor() const;
+    
+    std::string Description() const;
+    
+  private:
+    GraphicContextPtr m_context;
+    cocos2d::Color3B m_color;
+    Id m_id;
+    GreatPixel* m_pos;
+  };
+  
+  static const Organizm::Id UnknownOrgId = static_cast<Organizm::Id>(-1);
+  static const Organizm::Id EnergyId = static_cast<Organizm::Id>(0);
+  
+  using OrganizmPtr = std::shared_ptr<Organizm>;
   
   class GreatPixel
   {
   public:
-    cocos2d::Color3B color;
-    ObjectContextPtr context;
-    CellId id;
+    OrganizmPtr organizm;
     Vec2 pos;
   };
   
@@ -37,18 +67,18 @@ namespace jevo
   {
     Add,
     Move,
-    Delete
+    Delete,
+    Paint
   };
   
   class WorldModelDiff
   {
   public:
     DiffType type;
-    ObjectContextPtr context;
+    OrganizmPtr organizm;
     GreatPixel* destinationPixel;
     Vec2 sourcePos;
     Vec2 destinationPos;
-    CellId id;
     
     std::string Description() const;
   };
@@ -66,9 +96,15 @@ namespace jevo
     void PlayUpdates(unsigned int numberOfUpdates, Rect visibleRect, WorldModelDiffVect& updates);
     void PerformUpdates(unsigned int numberOfUpdates, Rect visibleRect, WorldModelDiffVect& result);
     
-    void Move(GreatPixel* sourceItem, GreatPixel* destItem, bool bypassResult, WorldModelDiffVect& result);
-    void Delete(GreatPixel* sourceItem, bool bypassResult, WorldModelDiffVect& result);
-    void Create(cocos2d::Color3B color, GreatPixel* sourceItem, bool bypassResult, WorldModelDiffVect& result);
+    void Move(Organizm::Id orgId,
+              cocos2d::Color3B color,
+              GreatPixel* sourceItem,
+              GreatPixel* destItem,
+              bool bypassResult,
+              WorldModelDiffVect& result);
+    void Delete(Organizm::Id orgId, GreatPixel* sourceItem, bool bypassResult, WorldModelDiffVect& result);
+    void Create(Organizm::Id orgId, cocos2d::Color3B color, GreatPixel* sourceItem, bool bypassResult, WorldModelDiffVect& result);
+    void Paint(Organizm::Id orgId, cocos2d::Color3B color, GreatPixel* sourceItem, bool bypassResult, WorldModelDiffVect& result);
     
     std::string m_workingFolder;
     BufferTypePtr m_map;
@@ -78,6 +114,5 @@ namespace jevo
     DiffItemVector m_pendingDiffs;
     unsigned int m_currentPosInDiffs = 0;
     uint32_t m_updateId = 0;
-    CellId m_nextId = 1;
   };
 }

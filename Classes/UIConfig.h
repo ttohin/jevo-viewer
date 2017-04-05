@@ -30,7 +30,7 @@ namespace jevo
     const unsigned int numberOfUpdatesPerTick = 1;
     const float updateTime = 0.0001;
     const bool healthCheck = false;
-    const bool removeFiles = true;
+    const bool removeFiles = false;
     const bool randomColorPerPartialMap = false;
     const cocos2d::Color3B mapBackground = cocos2d::Color3B::BLACK;
     const cocos2d::Color3B mainSceneBackground = cocos2d::Color3B(28, 28, 28);

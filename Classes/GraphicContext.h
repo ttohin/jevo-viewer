@@ -18,7 +18,7 @@ namespace jevo
   
     class PartialMap;
     
-    class ObjectContext
+    class GraphicContext
     {
     public:
       
@@ -26,18 +26,18 @@ namespace jevo
       
       using PartialMapPtr = std::shared_ptr<PartialMap>;
       
-      ObjectContext(uint64_t id,
-                    PartialMapPtr _owner,
-                  const cocos2d::Color3B& color,
-                  const cocos2d::Rect& textureRect,
-                  Vec2ConstRef origin,
-                  const Rect& rect);
-      virtual ~ObjectContext();
+      GraphicContext(uint64_t id,
+                     PartialMapPtr _owner,
+                     const cocos2d::Color3B& color,
+                     const cocos2d::Rect& textureRect,
+                     Vec2ConstRef origin,
+                     const Rect& rect);
+      virtual ~GraphicContext();
       
       void Move(Vec2ConstRef src, Vec2ConstRef dest, float animationDuration);
       
       virtual void BecomeOwner(PartialMapPtr _owner) ;
-      virtual void Destory(PartialMapPtr _owner) ;
+      virtual void Destory() ;
       virtual void Attack(const Vec2& pos, const Vec2& offset, float animationTime) ;
       virtual void ToggleAnimation();
       virtual void FadeCell();

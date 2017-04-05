@@ -28,7 +28,7 @@
 		8F12C2391ADF047100C14BBE /* menuButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 8F12C2351ADF047100C14BBE /* menuButton.png */; };
 		8F41F6E11E857EA4002358C0 /* AsyncKeyFrameReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F41F6DF1E857EA4002358C0 /* AsyncKeyFrameReader.cpp */; };
 		8F41F6E41E857F55002358C0 /* WorldModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F41F6E31E857F55002358C0 /* WorldModel.cpp */; };
-		8F473DD51E68BAF10030CD52 /* ObjectContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F473DD31E68BAF10030CD52 /* ObjectContext.cpp */; };
+		8F473DD51E68BAF10030CD52 /* GraphicContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F473DD31E68BAF10030CD52 /* GraphicContext.cpp */; };
 		8F48DE701AB676B50075D222 /* MainScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8F48DE611AB676B50075D222 /* MainScene.cpp */; };
 		8F48DE7D1AB7797B0075D222 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8F48DE7C1AB7797B0075D222 /* Images.xcassets */; };
 		8F62882B1AD19D8600526404 /* speed1_hl.png in Resources */ = {isa = PBXBuildFile; fileRef = 8F62881D1AD19D8600526404 /* speed1_hl.png */; };
@@ -113,8 +113,8 @@
 		8F41F6DF1E857EA4002358C0 /* AsyncKeyFrameReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AsyncKeyFrameReader.cpp; sourceTree = "<group>"; };
 		8F41F6E01E857EA4002358C0 /* AsyncKeyFrameReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AsyncKeyFrameReader.h; sourceTree = "<group>"; };
 		8F41F6E31E857F55002358C0 /* WorldModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WorldModel.cpp; sourceTree = "<group>"; };
-		8F473DD31E68BAF10030CD52 /* ObjectContext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ObjectContext.cpp; sourceTree = "<group>"; };
-		8F473DD41E68BAF10030CD52 /* ObjectContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObjectContext.h; sourceTree = "<group>"; };
+		8F473DD31E68BAF10030CD52 /* GraphicContext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GraphicContext.cpp; sourceTree = "<group>"; };
+		8F473DD41E68BAF10030CD52 /* GraphicContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphicContext.h; sourceTree = "<group>"; };
 		8F473DD71E68C2200030CD52 /* Logging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Logging.h; sourceTree = "<group>"; };
 		8F48DE5F1AB676B50075D222 /* AsyncDiffReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AsyncDiffReader.h; sourceTree = "<group>"; };
 		8F48DE611AB676B50075D222 /* MainScene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MainScene.cpp; sourceTree = "<group>"; };
@@ -346,8 +346,8 @@
 				8FDE8CFC1B2462F4000EE52C /* Viewport.h */,
 				8FDE8CD81B237033000EE52C /* PartialMap.h */,
 				8FC07C481E68D0F8008780CE /* PartialMap.cpp */,
-				8F473DD31E68BAF10030CD52 /* ObjectContext.cpp */,
-				8F473DD41E68BAF10030CD52 /* ObjectContext.h */,
+				8F473DD31E68BAF10030CD52 /* GraphicContext.cpp */,
+				8F473DD41E68BAF10030CD52 /* GraphicContext.h */,
 				8FC07C5B1E6C78BD008780CE /* SpriteBatch.cpp */,
 				8FC07C5C1E6C78BD008780CE /* SpriteBatch.h */,
 			);
@@ -471,7 +471,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				46880B8919C43A87006E1F66 /* AppDelegate.cpp in Sources */,
-				8F473DD51E68BAF10030CD52 /* ObjectContext.cpp in Sources */,
+				8F473DD51E68BAF10030CD52 /* GraphicContext.cpp in Sources */,
 				8FC07C571E6B5009008780CE /* PartialMapsManager.cpp in Sources */,
 				8FC07C591E6B6EEB008780CE /* PartialMap.cpp in Sources */,
 				8FBF250D1DB8D06600AE7991 /* SharedUIData.cpp in Sources */,

@@ -6,7 +6,7 @@
 //
 
 #include "PartialMapsManager.h"
-#include "ObjectContext.h"
+#include "GraphicContext.h"
 #include "PartialMap.h"
 #include "SharedUIData.h"
 #include "UIConfig.h"
@@ -18,6 +18,7 @@ namespace jevo
 {
   namespace graphic
   {
+    //********************************************************************************************
     Vec2 GetMapOriginFromPos(const Vec2& pos)
     {
       return Vec2((pos.x/kSegmentSize) * kSegmentSize,
@@ -53,6 +54,7 @@ namespace jevo
       HealthCheck();
     }
     
+    //********************************************************************************************
     void PartialMapsManager::ProccessUpdate(const WorldModelDiff& u, float animationDuration)
     {
       Vec2 initialPos = u.sourcePos;
@@ -61,21 +63,16 @@ namespace jevo
       
       Vec2 destinationPos = initialPos;
       
-      ObjectContextPtr context = u.context;
+      OrganizmPtr organizm = u.organizm;
       
-      assert(u.id != 0);
+      assert(organizm);
       
-      if (context && u.destinationPixel->context)
-      {
-        assert(context == u.destinationPixel->context);
-      }
+      auto context = organizm->GetGraphicContext();
       
       if(type == DiffType::Move)
       {
         if (!context)
           return;
-        
-        //assert(u.context == u.destinationItem->context);
         
         destinationPos = u.destinationPos;
       }
@@ -83,17 +80,11 @@ namespace jevo
       PartialMapPtr initialMap = GetMap(GetMapOriginFromPos(initialPos));
       PartialMapPtr destinationMap = GetMap(GetMapOriginFromPos(destinationPos));
       
-      LOG_W("context: %s, initialMap: %s, destinationMap: %s",
-            context ? context->Description().c_str() : "null",
-            initialMap ? initialMap->Description().c_str() : "null",
-            destinationMap ? destinationMap->Description().c_str() : "null");
-      
-      
       if (!initialMap && !destinationMap)
       {
         if (context)
         {
-          DeleteFromMap(u.destinationPixel, initialMap);
+          DeleteFromMap(organizm);
         }
         return;
       }
@@ -101,8 +92,7 @@ namespace jevo
       if (!destinationMap)
       {
         assert(context);
-        LOG_W("cell is going to outside %s %s %s", __FUNCTION__, destinationPos.Description().c_str(), u.destinationItem->context->Description().c_str());
-        DeleteFromMap(u.destinationPixel, initialMap);
+        DeleteFromMap(organizm);
         return;
       }
       
@@ -113,7 +103,7 @@ namespace jevo
         // create context if it's needed
         if (!context)
         {
-          context = CreateObjectContext(u.destinationPixel,
+          context = CreateGraphicContext(u.destinationPixel,
                                         initialPos,
                                         mapForAction);
         }
@@ -127,6 +117,7 @@ namespace jevo
              mapForAction,
              steps,
              animationDuration);
+        
         context->FadeCell();
         
         return;
@@ -136,7 +127,7 @@ namespace jevo
       {
         assert(context == nullptr);
         PartialMapPtr mapForAction = destinationMap ? destinationMap : initialMap;
-        context = CreateObjectContext(u.destinationPixel,
+        context = CreateGraphicContext(u.destinationPixel,
                                       initialPos,
                                       mapForAction);
         assert(context);
@@ -160,10 +151,11 @@ namespace jevo
         assert(context);
         context->FadeCell();
         context->Alert(cocos2d::Color3B::RED);
-        DeleteFromMap(u.destinationPixel, initialMap);
+        DeleteFromMap(organizm);
       }
     }
     
+    //********************************************************************************************
     void PartialMapsManager::HealthCheck()
     {
       if (!config::healthCheck)
@@ -178,9 +170,9 @@ namespace jevo
           
           auto pd = m_worldModel->GetItem(pos);
           assert(pd);
-          if (!pos.In(m_visibleArea))
+          if (!pos.In(m_visibleArea) && pd->organizm)
           {
-            assert(!pd->context);
+            assert(!pd->organizm->GetGraphicContext());
           }
         }
       }
@@ -201,8 +193,7 @@ namespace jevo
                 m_lightNode,
                 cocos2d::Vec2::ZERO);
 
-      map->Transfrorm(args.graphicPos,
-                      1.0);
+      map->Transfrorm(args.graphicPos, 1.0);
       map->EnableAnimations(m_enableAnimations);
       map->EnableFancyAnimations(m_enableFancyAnimaitons);
       
@@ -216,7 +207,7 @@ namespace jevo
           auto pos = Vec2(i, j);
           auto pd = m_worldModel->GetItem(pos);
           assert(pd);
-          CreateObjectContext(pd, pos, map);
+          CreateGraphicContext(pd, pos, map);
         }
       }
       
@@ -262,19 +253,19 @@ namespace jevo
         for (int j = m_visibleArea.origin.y; j < m_visibleArea.origin.y + m_visibleArea.size.y; ++j)
         {
           auto pos = Vec2(i, j);
-          auto pd = m_worldModel->GetItem(pos);
-          assert(pd);
-          if (pd->context)
+          const GraphicContextPtr& graphicContext = GetGraphicContext(pos);
+          if (graphicContext)
           {
-            pd->context->ToggleAnimation();
+            graphicContext->ToggleAnimation();
           }
         }
       }
     }
     
+    //********************************************************************************************
     PartialMapsManager::~PartialMapsManager()
     {
-      auto contextInstanceCount = ObjectContext::instanceCounter;
+      auto contextInstanceCount = GraphicContext::instanceCounter;
       
       auto deletedContext = 0;
       
@@ -284,17 +275,17 @@ namespace jevo
         for (int j = 0; j < size.y; ++j)
         {
           auto pos = Vec2(i, j);
-          auto pd = m_worldModel->GetItem(pos);
-          assert(pd);
-          if (pd->context)
-          {
-            pd->context = nullptr;
-            deletedContext += 1;
-          }
+          auto pixel = m_worldModel->GetItem(pos);
+          auto organizm = pixel->organizm;
+          
+          if (!organizm) continue;
+          
+          organizm->SetGraphicContext(nullptr);
+          deletedContext += 1;
         }
       }
       
-      auto contextInstanceCountAfterRemoval = ObjectContext::instanceCounter;
+      auto contextInstanceCountAfterRemoval = GraphicContext::instanceCounter;
       assert(contextInstanceCountAfterRemoval == 0);
       assert(deletedContext == contextInstanceCount);
       
@@ -315,68 +306,49 @@ namespace jevo
       assert(sprites == 0);
     }
     
-    
     //********************************************************************************************
-    ObjectContextPtr PartialMapsManager::CreateObjectContext(GreatPixel* cell,
-                                                             Vec2ConstRef pos,
-                                                             const PartialMapPtr& map)
+    GraphicContextPtr PartialMapsManager::CreateGraphicContext(GreatPixel* pixel,
+                                                               Vec2ConstRef pos,
+                                                               const PartialMapPtr& map)
     {
-      if (cell->id == 0)
+      const OrganizmPtr& organizm = pixel->organizm;
+      
+      if (!organizm)
         return nullptr;
       
-      if (cell->context)
+      GraphicContextPtr context = organizm->GetGraphicContext();
+      if (context)
       {
-        cell->context->BecomeOwner(map);
-        cell->context->tt_pos = pos;
-        return cell->context;
+        context->BecomeOwner(map);
+        context->tt_pos = pos;
+        return context;
       }
       
-      //TODO: get texture from file
-//      auto groupId = 0;
-//      auto textureRect = SharedUIData::getInstance()->m_textureMap[groupId];
       auto textureRect = cocos2d::Rect(0, 0, 1, 1);
       
       auto rect = Rect(pos, Vec2(1, 1));
-      cell->context = std::make_shared<ObjectContext>(cell->id,
-                                                      map,
-                                                    cell->color,
-                                                    textureRect,
-                                                    pos,
-                                                    rect);
-      cell->context->tt_pos = pos;
-      cell->context->ToggleAnimation();
-      return cell->context;
+      context = std::make_shared<GraphicContext>(organizm->GetId(),
+                                                 map,
+                                                 organizm->GetColor(),
+                                                 textureRect,
+                                                 pos,
+                                                 rect);
+      organizm->SetGraphicContext(context);
+      context->tt_pos = pos;
+      context->ToggleAnimation();
+      
+      return context;
     }
     
-    void PartialMapsManager::PrintMap()
+    //********************************************************************************************
+    GraphicContextPtr PartialMapsManager::GetGraphicContext(Vec2 pos) const
     {
-      auto size = m_worldModel->GetSize();
-      for (int i = 0; i < size.x; ++i)
-      {
-        for (int j = 0; j < size.y; ++j)
-        {
-          auto pos = Vec2(i, j);
-          
-          auto pd = m_worldModel->GetItem(pos);
-          assert(pd);
-          
-          if (pd->context)
-          {
-            assert(pd->id != 0);
-          }
-          
-          if (pd->context)
-          {
-            LOG_W("%s id: %llu %s %s", __FUNCTION__, pd->id, pos.Description().c_str(), pd->context->Description().c_str());
-          }
-          else if (pd->id != 0)
-          {
-            LOG_W("%s id: %llu %s null", __FUNCTION__, pd->id, pos.Description().c_str());
-          }
-        }
-      }
+      auto pd = m_worldModel->GetItem(pos);
+      assert(pd);
+      return pd->organizm ? pd->organizm->GetGraphicContext() : nullptr;
     }
     
+    //********************************************************************************************
     void PartialMapsManager::RemoveMap(const PartialMapPtr& map)
     {
       for (int i = map->m_a1; i < map->m_a2; ++i)
@@ -384,30 +356,36 @@ namespace jevo
         for (int j = map->m_b1; j < map->m_b2; ++j)
         {
           auto pos = Vec2(i, j);
-          auto pd = m_worldModel->GetItem(pos);
-          assert(pd);
-          if (pd->context)
+          auto pixel = m_worldModel->GetItem(pos);
+          auto organizm = pixel->organizm;
+          
+          if (!organizm) continue;
+          
+          auto graphicContext = organizm->GetGraphicContext();
+          
+          if (graphicContext)
           {
-            pd->context->Destory(nullptr);
-            pd->context = nullptr;
+            graphicContext->Destory();
+            organizm->SetGraphicContext(nullptr);
           }
         }
       }
     }
 
     //********************************************************************************************
-    void PartialMapsManager::DeleteFromMap(GreatPixel* cd,
-                                           const PartialMapPtr& map)
+    void PartialMapsManager::DeleteFromMap(const OrganizmPtr& organizm)
     {
-      if (cd->context == nullptr)
+      const GraphicContextPtr& graphicContext = organizm->GetGraphicContext();
+      
+      if (graphicContext == nullptr)
         return;
       
-      cd->context->Destory(map);
-      cd->context = nullptr;
+      graphicContext->Destory();
+      organizm->SetGraphicContext(nullptr);
     }
     
     //********************************************************************************************
-    void PartialMapsManager::Move(ObjectContextPtr context,
+    void PartialMapsManager::Move(GraphicContextPtr context,
                                   const Vec2& source,
                                   const Vec2& dest,
                                   const PartialMapPtr& map,

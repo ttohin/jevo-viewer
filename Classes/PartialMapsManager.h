@@ -17,12 +17,12 @@ namespace jevo
 {
   namespace graphic
   {
-    class ObjectContext;
+    class GraphicContext;
     class PartialMap;
 
     using PartialMapPtr = std::shared_ptr<PartialMap>;
     using Maps = std::unordered_map<Vec2, PartialMapPtr, Vec2Hasher>;
-    using ObjectContextPtr = std::shared_ptr<ObjectContext>;
+    using GraphicContextPtr = std::shared_ptr<GraphicContext>;
     
     class PartialMapsManager
     {
@@ -48,18 +48,19 @@ namespace jevo
       virtual ~PartialMapsManager();
       
     private:
-      using GraphicContextList = std::list<ObjectContext*>;
+      using GraphicContextList = std::list<GraphicContext*>;
       
       void PrintMap();
       PartialMapPtr GetMap(Vec2ConstRef pos);
       PartialMapPtr CreateMap(const CreateMapArg& args);
-      ObjectContextPtr CreateObjectContext(GreatPixel* cell,
+      GraphicContextPtr CreateGraphicContext(GreatPixel* cell,
                                            Vec2ConstRef pos,
                                            const PartialMapPtr& map);
+      GraphicContextPtr GetGraphicContext(Vec2 pos) const;
       void RemoveMap(const PartialMapPtr& map);
 
-      void DeleteFromMap(GreatPixel* cd, const PartialMapPtr& map);
-      void Move(ObjectContextPtr context,
+      void DeleteFromMap(const OrganizmPtr& organizm);
+      void Move(GraphicContextPtr context,
                 const Vec2& source,
                 const Vec2& dest,
                 const PartialMapPtr& map,

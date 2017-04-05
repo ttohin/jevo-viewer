@@ -4,7 +4,6 @@
 namespace jevo
 {
   bool AsyncKeyFrameReader::ReadFromFile(const std::string& fileName,
-                                         CellId& initialCellId,
                                          BufferTypePtr& buffer)
   {
     std::ifstream i(fileName);
@@ -34,20 +33,21 @@ namespace jevo
       PixelPos colorValue = item["c"];
       PixelPos x = item["x"];
       PixelPos y = item["y"];
+      Organizm::Id id = item["id"];
       
       x -= 1;
       y -= 1;
       
-      if (colorValue != 0)
-      {
-        GreatPixel* bufferItem = nullptr;
-        if (!buffer->Get(x, y, &bufferItem))
-          return false;
-        
-        auto color = graphic::ColorFromUint(colorValue);
-        bufferItem->color = color;
-        bufferItem->id = initialCellId++;
-      }
+      auto color = graphic::ColorFromUint(colorValue);
+      assert(color != cocos2d::Color3B());
+      
+      GreatPixel* bufferItem = nullptr;
+      if (!buffer->Get(x, y, &bufferItem))
+        return false;
+      
+      auto organizm = std::make_shared<Organizm>(bufferItem, id, color);
+      
+      bufferItem->organizm = organizm;
     }
     
     return true;

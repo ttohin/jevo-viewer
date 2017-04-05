@@ -1,5 +1,5 @@
 
-#include "ObjectContext.h"
+#include "GraphicContext.h"
 #include "Logging.h"
 #include "UICommon.h"
 #include "PartialMap.h"
@@ -15,14 +15,14 @@ namespace jevo
 {
   namespace graphic
   {
-    std::uint32_t ObjectContext::instanceCounter = 0;
+    std::uint32_t GraphicContext::instanceCounter = 0;
     
-    ObjectContext::ObjectContext(uint64_t id,
-                                 PartialMapPtr _owner,
-                             const cocos2d::Color3B& color,
-                             const cocos2d::Rect& textureRect,
-                             Vec2ConstRef origin,
-                             const Rect& rect)
+    GraphicContext::GraphicContext(uint64_t id,
+                                   PartialMapPtr _owner,
+                                   const cocos2d::Color3B& color,
+                                   const cocos2d::Rect& textureRect,
+                                   Vec2ConstRef origin,
+                                   const Rect& rect)
     {
       m_id = id;
       instanceCounter += 1;
@@ -52,14 +52,14 @@ namespace jevo
       LOG_W("%s %s", __FUNCTION__, Description().c_str());
     }
     
-    ObjectContext::~ObjectContext()
+    GraphicContext::~GraphicContext()
     {
       LOG_W("%s %s", __FUNCTION__, Description().c_str());
       instanceCounter -= 1;
-      Destory(nullptr);
+      Destory();
     }
     
-    void ObjectContext::Move(Vec2ConstRef src, Vec2ConstRef dest, float animationTime)
+    void GraphicContext::Move(Vec2ConstRef src, Vec2ConstRef dest, float animationTime)
     {
       Vec2 localSrc = GetPosInOwnerBase(src);
       Vec2 localDest = GetPosInOwnerBase(dest);
@@ -84,9 +84,9 @@ namespace jevo
       
       m_pos = GetPosInOwnerBase(dest);
     }
-
     
-    void ObjectContext::BecomeOwner(PartialMapPtr _owner)
+    
+    void GraphicContext::BecomeOwner(PartialMapPtr _owner)
     {
       LOG_W("%s %s", __FUNCTION__, Description().c_str());
       
@@ -106,7 +106,7 @@ namespace jevo
       m_owner = _owner;
     }
     
-    void ObjectContext::Destory(PartialMapPtr _owner)
+    void GraphicContext::Destory()
     {
       LOG_W("%s %s", __FUNCTION__, Description().c_str());
       
@@ -118,9 +118,9 @@ namespace jevo
       assert(m_sprite);
       m_owner->m_cellMap->RemoveSprite(m_sprite);
       m_owner = nullptr;
-    } 
+    }
     
-    void ObjectContext::Attack(const Vec2& pos, const Vec2& attackOffset, float animationDuration)
+    void GraphicContext::Attack(const Vec2& pos, const Vec2& attackOffset, float animationDuration)
     {
       Vec2 localSrc = GetPosInOwnerBase(pos);
       
@@ -143,7 +143,7 @@ namespace jevo
       }
     }
     
-    void ObjectContext::ToggleAnimation()
+    void GraphicContext::ToggleAnimation()
     {
       return;
       
@@ -166,7 +166,7 @@ namespace jevo
       m_sprite->runAction(loop);
     }
     
-    void ObjectContext::Alert(cocos2d::Color3B alertColor)
+    void GraphicContext::Alert(cocos2d::Color3B alertColor)
     {
       auto s = m_owner->m_background->CreateSprite();
       
@@ -186,7 +186,7 @@ namespace jevo
       s->runAction(cocos2d::Sequence::createWithTwoActions(fade, removeSelf));
     }
     
-    void ObjectContext::FadeCell()
+    void GraphicContext::FadeCell()
     {
       auto s = m_owner->m_background->CreateSprite();
       
@@ -195,18 +195,18 @@ namespace jevo
       s->setOpacity(config::fadeInitialOpacity);
       s->setScale(m_sprite->getScale());
       s->setColor(m_sprite->getColor());
-
+      
       auto fade = cocos2d::FadeTo::create(config::fadeDuration, 0);
       auto bgLayer = m_owner->m_background;
       auto removeSelf = cocos2d::CallFunc::create([bgLayer, s]()
-                                         {
-                                           bgLayer->RemoveSprite(s);
-                                         });
+                                                  {
+                                                    bgLayer->RemoveSprite(s);
+                                                  });
       
       s->runAction(cocos2d::Sequence::createWithTwoActions(fade, removeSelf));
     }
     
-    std::string ObjectContext::Description() const
+    std::string GraphicContext::Description() const
     {
       std::stringstream ss;
       ss <<
@@ -219,7 +219,7 @@ namespace jevo
     }
     
     
-    Vec2 ObjectContext::GetPosInOwnerBase(Vec2ConstRef pos) const
+    Vec2 GraphicContext::GetPosInOwnerBase(Vec2ConstRef pos) const
     {
       return pos - Vec2(m_owner->m_a1, m_owner->m_b1);
     }

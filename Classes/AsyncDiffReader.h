@@ -14,6 +14,7 @@
 
 namespace jevo
 {
+  
   class DiffItem
   {
   public:
@@ -22,6 +23,8 @@ namespace jevo
     PixelPos destX = 0;
     PixelPos destY = 0;
     cocos2d::Color3B color;
+    std::string action;
+    uint64_t id = -1;
   };
   
   using DiffItemVector = std::vector<DiffItem>;
@@ -52,6 +55,8 @@ namespace jevo
         item.sourseY = d["sy"];
         item.destX = d["dx"];
         item.destY = d["dy"];
+        item.action = d["a"];
+        item.id = d["id"];
         item.color = graphic::ColorFromUint(d["c"]);
         m_seq.push_back(item);
       }

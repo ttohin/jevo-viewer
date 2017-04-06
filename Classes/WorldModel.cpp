@@ -187,7 +187,7 @@ namespace jevo
       
       Organizm::Id OrgId = diff.id == 0 ? EnergyId : diff.id;
       
-      if (diff.action == "delete")
+      if (diff.action == "remove")
       {
         Delete(OrgId, sourceItem, bypassResult, result);
       }

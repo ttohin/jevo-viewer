@@ -117,7 +117,7 @@ namespace jevo
     BufferTypePtr m_map;
     bool inited = false;
     WorldModelDiffVect m_outputUpdates;
-    AsyncDiffReader m_diffReader;
+    std::shared_ptr<AsyncDiffReader> m_diffReader;
     DiffItemVector m_pendingDiffs;
     unsigned int m_currentPosInDiffs = 0;
     uint32_t m_updateId = 1;

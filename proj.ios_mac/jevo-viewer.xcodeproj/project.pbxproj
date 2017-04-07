@@ -51,6 +51,7 @@
 		8FC07C5D1E6C78BD008780CE /* SpriteBatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8FC07C5B1E6C78BD008780CE /* SpriteBatch.cpp */; };
 		8FC07C601E6C8C2B008780CE /* pauseBtn.png in Resources */ = {isa = PBXBuildFile; fileRef = 8FC07C5F1E6C8C2B008780CE /* pauseBtn.png */; };
 		8FC07C631E6C8D18008780CE /* pauseBtn_sel.png in Resources */ = {isa = PBXBuildFile; fileRef = 8FC07C621E6C8D18008780CE /* pauseBtn_sel.png */; };
+		8FCD9A991E98263C004AD082 /* font1.png in Resources */ = {isa = PBXBuildFile; fileRef = 8FCD9A981E98263C004AD082 /* font1.png */; };
 		8FDE8CD01B2325D8000EE52C /* game.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 8FDE8CCD1B2325D8000EE52C /* game.glsl */; };
 		8FDE8CD21B2325D8000EE52C /* generic.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 8FDE8CCE1B2325D8000EE52C /* generic.vsh */; };
 		8FDE8CE41B23793E000EE52C /* UIConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8FDE8CE21B23793E000EE52C /* UIConfig.cpp */; };
@@ -146,6 +147,7 @@
 		8FC07C5C1E6C78BD008780CE /* SpriteBatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpriteBatch.h; sourceTree = "<group>"; };
 		8FC07C5F1E6C8C2B008780CE /* pauseBtn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pauseBtn.png; sourceTree = "<group>"; };
 		8FC07C621E6C8D18008780CE /* pauseBtn_sel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pauseBtn_sel.png; sourceTree = "<group>"; };
+		8FCD9A981E98263C004AD082 /* font1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = font1.png; sourceTree = "<group>"; };
 		8FDE8CCD1B2325D8000EE52C /* game.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = game.glsl; sourceTree = "<group>"; };
 		8FDE8CCE1B2325D8000EE52C /* generic.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = generic.vsh; sourceTree = "<group>"; };
 		8FDE8CD81B237033000EE52C /* PartialMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PartialMap.h; sourceTree = "<group>"; };
@@ -246,6 +248,7 @@
 		46880B7519C43A67006E1F66 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				8FCD9A981E98263C004AD082 /* font1.png */,
 				8FBF25101DB8D0C400AE7991 /* blank.png */,
 				8FB7C3E81BA49E3D00194722 /* font.png */,
 				8FDE8CCD1B2325D8000EE52C /* game.glsl */,
@@ -443,6 +446,7 @@
 				8F6288371AD19D8600526404 /* speed10_hl.png in Resources */,
 				8F12C22F1ADEFF3100C14BBE /* prsv.png in Resources */,
 				8FB7C3EA1BA49E3D00194722 /* font.png in Resources */,
+				8FCD9A991E98263C004AD082 /* font1.png in Resources */,
 				8F6288311AD19D8600526404 /* speed2_hl.png in Resources */,
 				8F6288331AD19D8600526404 /* speed2_sel.png in Resources */,
 				8FBF25141DB8D15400AE7991 /* blank.png in Resources */,

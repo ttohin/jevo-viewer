@@ -20,6 +20,7 @@ namespace jevo
     
     LoadingScene::~LoadingScene()
     {
+      if (m_worldModel) m_worldModel->Stop();
     }
     
     bool LoadingScene::init()
@@ -34,7 +35,10 @@ namespace jevo
       Size visibleSize = Director::getInstance()->getVisibleSize();
       auto origin = Director::getInstance()->getVisibleOrigin();
       
-      m_info = CreateLabel("Loading", cocos2d::Vec2(visibleSize.width / 2, visibleSize.height / 2));
+      m_info = CreateLabel("loading.", cocos2d::Vec2(12, visibleSize.height / 2));
+      m_description1 = CreateLabel("", cocos2d::Vec2(12, visibleSize.height / 2 - 32 - 4));
+      m_description2 = CreateLabel("", cocos2d::Vec2(12, visibleSize.height / 2 - 32 * 2 - 4));
+      
       m_worldModel = std::make_shared<WorldModel>();
       
       schedule(schedule_selector(LoadingScene::LoadViewModel), 2, CC_REPEAT_FOREVER, 0);
@@ -53,6 +57,11 @@ namespace jevo
         unschedule(schedule_selector(LoadingScene::LoadViewModel));
         schedule(schedule_selector(LoadingScene::CreateViewport), 0, 0, 0);
       }
+      else
+      {
+        m_description1->setString("waiting for keyframe.json");
+        m_description2->setString(config::workingFolder.c_str());
+      }
     }
     
     void LoadingScene::CreateViewport(float dt)
@@ -61,6 +70,7 @@ namespace jevo
       rootNode->retain();
       Size visibleSize = Director::getInstance()->getVisibleSize();
       m_viewport = std::make_shared<jevo::graphic::Viewport>(rootNode, visibleSize, m_worldModel);
+      m_worldModel = nullptr;
       
       auto mapScene = MainScene::createScene(m_viewport);
       Director::getInstance()->replaceScene(mapScene);
@@ -68,20 +78,11 @@ namespace jevo
     
     cocos2d::LabelProtocol* LoadingScene::CreateLabel(const char* text, const cocos2d::Vec2& offset)
     {
-#if CC_TARGET_PLATFORM == CC_PLATFORM_WIN32
-      auto result = LabelAtlas::create(text, "font.png", 18, 24, 32);
+      auto result = LabelAtlas::create(text, "font1.png", 32, 32, 0);
       result->setPosition(offset);
+      result->setScale(0.5, 0.8);
       addChild(result);
       return result;
-#else
-      auto result = Label::createWithSystemFont(text, "Menlo", 24, Size::ZERO, TextHAlignment::RIGHT);
-      //  auto result = Label::createWithCharMap("font.png", 18, 24, 32);
-      result->setString(text);
-      result->setPosition(offset);
-      result->setHorizontalAlignment(TextHAlignment::LEFT);
-      addChild(result);
-      return result;
-#endif
     }
   }
 }

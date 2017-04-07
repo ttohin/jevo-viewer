@@ -118,7 +118,8 @@ namespace jevo
       return false;
     }
     
-    if (!m_diffReader.Init(workingFolder))
+    m_diffReader = std::make_shared<AsyncDiffReader>();
+    if (!m_diffReader->Init(workingFolder))
     {
       return false;
     }
@@ -129,7 +130,8 @@ namespace jevo
   
   bool WorldModel::Stop()
   {
-    m_diffReader.Stop();
+    if (m_diffReader) m_diffReader->Stop();
+    if (!m_map) return true;
     m_map->ForEach([](const PixelPos&, const PixelPos&, const GreatPixel& pixel)
                    {
                      if (pixel.organizm) pixel.organizm->Delete();
@@ -156,10 +158,10 @@ namespace jevo
       return PerformUpdates(numberOfUpdates, visibleRect, updates);
     }
     
-    if (m_diffReader.IsAvailable())
+    if (m_diffReader->IsAvailable())
     {
       assert(m_pendingDiffs.empty());
-      m_diffReader.PopDiffs(m_pendingDiffs);
+      m_diffReader->PopDiffs(m_pendingDiffs);
       
       if (!m_pendingDiffs.empty())
       {
@@ -168,7 +170,7 @@ namespace jevo
       }
       else
       {
-        m_diffReader.LoadNext();
+        m_diffReader->LoadNext();
       }
     }
   }

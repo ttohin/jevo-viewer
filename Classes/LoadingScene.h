@@ -40,6 +40,8 @@ namespace jevo
 
 private:
   cocos2d::LabelProtocol* m_info;
+  cocos2d::LabelProtocol* m_description1;
+  cocos2d::LabelProtocol* m_description2;
   std::shared_ptr<WorldModel> m_worldModel;
   jevo::graphic::Viewport::Ptr m_viewport;
   std::vector<std::string> m_mapList;

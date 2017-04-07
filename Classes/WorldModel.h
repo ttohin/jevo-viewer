@@ -27,7 +27,12 @@ namespace jevo
   public:
     using Id = uint64_t;
     
-    Organizm(GreatPixel* pos, Id id, cocos2d::Color3B color);
+    static const Organizm::Id UnknownOrgId = static_cast<Organizm::Id>(-1);
+    static const Organizm::Id EnergyId = static_cast<Organizm::Id>(0);
+    
+    Organizm(Id id,
+             GreatPixel* pos,
+             cocos2d::Color3B color);
     virtual ~Organizm();
     void Move(GreatPixel* pos);
     void ChangeColor(cocos2d::Color3B color);
@@ -38,18 +43,20 @@ namespace jevo
     const GraphicContextPtr& GetGraphicContext() const;
     void SetGraphicContext(const GraphicContextPtr& context);
     cocos2d::Color3B GetColor() const;
+    uint64_t GetUpdateNumber() const;
+    void SetUpdateNumber(uint64_t updateId);
     
     std::string Description() const;
     
   private:
     GraphicContextPtr m_context;
     cocos2d::Color3B m_color;
-    Id m_id;
+    Id m_id = UnknownOrgId;
+    uint64_t m_updateNumber = 0;
     GreatPixel* m_pos;
   };
   
-  static const Organizm::Id UnknownOrgId = static_cast<Organizm::Id>(-1);
-  static const Organizm::Id EnergyId = static_cast<Organizm::Id>(0);
+
   
   using OrganizmPtr = std::shared_ptr<Organizm>;
   
@@ -113,6 +120,6 @@ namespace jevo
     AsyncDiffReader m_diffReader;
     DiffItemVector m_pendingDiffs;
     unsigned int m_currentPosInDiffs = 0;
-    uint32_t m_updateId = 0;
+    uint32_t m_updateId = 1;
   };
 }

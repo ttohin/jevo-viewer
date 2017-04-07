@@ -6,7 +6,7 @@
 
 namespace jevo
 {
-  Organizm::Organizm(GreatPixel* pos, Organizm::Id id, cocos2d::Color3B color)
+  Organizm::Organizm(Organizm::Id id, GreatPixel* pos, cocos2d::Color3B color)
   : m_context(nullptr)
   , m_color(color)
   , m_id(id)
@@ -20,7 +20,6 @@ namespace jevo
   
   Organizm::~Organizm()
   {
-    assert(m_pos->organizm.get() != this);
   }
   
   void Organizm::Move(GreatPixel* pos)
@@ -69,6 +68,16 @@ namespace jevo
   cocos2d::Color3B Organizm::GetColor() const
   {
     return m_color;
+  }
+  
+  uint64_t Organizm::GetUpdateNumber() const
+  {
+    return m_updateNumber;
+  }
+  
+  void Organizm::SetUpdateNumber(uint64_t updateNumber)
+  {
+    m_updateNumber = updateNumber;
   }
   
   std::string Organizm::Description() const
@@ -121,6 +130,10 @@ namespace jevo
   bool WorldModel::Stop()
   {
     m_diffReader.Stop();
+    m_map->ForEach([](const PixelPos&, const PixelPos&, const GreatPixel& pixel)
+                   {
+                     if (pixel.organizm) pixel.organizm->Delete();
+                   });
     return true;
   }
   
@@ -172,8 +185,7 @@ namespace jevo
     while(i < playableUpdats && result.size() < numberOfUpdates)
     {
       unsigned int diffIndex = m_currentPosInDiffs + i;
-      const auto& diff = m_pendingDiffs.at(diffIndex);
-      i += 1;
+      const DiffItem& diff = m_pendingDiffs.at(diffIndex);
       
       auto soursePos = Vec2(diff.sourseX - 1, diff.sourseY - 1);
       auto destPos = Vec2(diff.destX - 1, diff.destY - 1);
@@ -185,11 +197,26 @@ namespace jevo
       auto destItem = GetItem(destPos);
       assert(destItem);
       
-      Organizm::Id OrgId = diff.id == 0 ? EnergyId : diff.id;
+      OrganizmPtr organizm = sourceItem->organizm;
+      if (organizm)
+      {
+        if (organizm->GetUpdateNumber() == m_updateId)
+        {
+          break;
+        }
+        else
+        {
+          organizm->SetUpdateNumber(m_updateId);
+        }
+      }
+      
+      i += 1;
+      
+      Organizm::Id OrgId = diff.id == 0 ? Organizm::EnergyId : diff.id;
       
       if (diff.action == "remove")
       {
-        Delete(OrgId, sourceItem, bypassResult, result);
+        Delete(OrgId, destItem, bypassResult, result);
       }
       else if (diff.action == "add")
       {
@@ -224,13 +251,7 @@ namespace jevo
     
     OrganizmPtr organizm = sourceItem->organizm;
     
-    // hack
-    // assert(organizm);
-    if (!organizm)
-    {
-      return Create(orgId, color, destItem, bypassResult, result);
-    }
-    
+    assert(organizm);
     assert(organizm->GetId() == orgId);
     
     organizm->Move(destItem);
@@ -253,14 +274,7 @@ namespace jevo
     assert(sourceItem);
     
     OrganizmPtr organizm = sourceItem->organizm;
-    
-    // hack
-    // assert(organizm);
-    
-    if (!organizm)
-    {
-      return;
-    }
+    assert(organizm);
     
     organizm->Delete();
     
@@ -281,7 +295,15 @@ namespace jevo
   {
     assert(sourceItem);
     
-    auto organizm = std::make_shared<Organizm>(sourceItem, orgId, color);
+    if (sourceItem->organizm
+        && sourceItem->organizm->GetId() == 0
+        && orgId == 0)
+    {
+      return;
+    }
+    
+    auto organizm = std::make_shared<Organizm>(orgId, sourceItem, color);
+    organizm->SetUpdateNumber(m_updateId);
     sourceItem->organizm = organizm;
     
     if (bypassResult)
@@ -302,13 +324,8 @@ namespace jevo
     assert(sourceItem);
     
     OrganizmPtr organizm = sourceItem->organizm;
-    // hack
-    // assert(organizm);
-    if (!organizm)
-    {
-      return Create(orgId, color, sourceItem, bypassResult, result);
-    }
-    
+    assert(organizm);
+
     organizm->ChangeColor(color);
     
     if (bypassResult)

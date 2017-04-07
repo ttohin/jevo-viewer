@@ -45,7 +45,7 @@ namespace jevo
       if (!buffer->Get(x, y, &bufferItem))
         return false;
       
-      auto organizm = std::make_shared<Organizm>(bufferItem, id, color);
+      auto organizm = std::make_shared<Organizm>(id, bufferItem, color);
       
       bufferItem->organizm = organizm;
     }

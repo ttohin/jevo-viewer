@@ -27,8 +27,8 @@ namespace jevo
   {
     const std::string workingFolder = cocos2d::FileUtils::getInstance()->getWritablePath() + "jevo";
     const float initialScale = 0.1;
-    const unsigned int numberOfUpdatesPerTick = 1;
-    const float updateTime = 0.0001;
+    const unsigned int numberOfUpdatesPerTick = 100;
+    const float updateTime = 0.05;
     const bool healthCheck = false;
     const bool removeFiles = false;
     const bool randomColorPerPartialMap = false;

@@ -25,6 +25,7 @@ namespace jevo
     cocos2d::Color3B color;
     std::string action;
     uint64_t id = -1;
+    uint64_t updateNumber = -1;
   };
   
   using DiffItemVector = std::vector<DiffItem>;
@@ -57,6 +58,7 @@ namespace jevo
         item.destY = d["dy"];
         item.action = d["a"];
         item.id = d["id"];
+        item.updateNumber = d["n"];
         item.color = graphic::ColorFromUint(d["c"]);
         m_seq.push_back(item);
       }

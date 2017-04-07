@@ -128,17 +128,11 @@ namespace jevo
         assert(context == nullptr);
         PartialMapPtr mapForAction = destinationMap ? destinationMap : initialMap;
         context = CreateGraphicContext(u.destinationPixel,
-                                      initialPos,
+                                      destinationPos,
                                       mapForAction);
         assert(context);
-        int steps = 0;
-        Move(context,
-             initialPos,
-             destinationPos,
-             mapForAction,
-             steps,
-             animationDuration);
-        context->Alert(cocos2d::Color3B::GREEN);
+        if (organizm->GetId() == 0) context->Alert(cocos2d::Color3B::GREEN);
+        if (organizm->GetId() != 0) context->Alert(cocos2d::Color3B::YELLOW);
       }
       
       if (type == DiffType::Delete)
@@ -150,7 +144,8 @@ namespace jevo
         
         assert(context);
         context->FadeCell();
-        context->Alert(cocos2d::Color3B::RED);
+        if (organizm->GetId() == 0) context->Alert(cocos2d::Color3B::BLUE);
+        if (organizm->GetId() != 0) context->Alert(cocos2d::Color3B::RED);
         DeleteFromMap(organizm);
       }
     }
@@ -278,7 +273,7 @@ namespace jevo
           auto pixel = m_worldModel->GetItem(pos);
           auto organizm = pixel->organizm;
           
-          if (!organizm) continue;
+          if (!organizm || !organizm->GetGraphicContext()) continue;
           
           organizm->SetGraphicContext(nullptr);
           deletedContext += 1;

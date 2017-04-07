@@ -27,9 +27,6 @@
     <ClCompile Include="..\Classes\MainScene.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\ObjectContext.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\PartialMap.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -52,6 +49,15 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\Viewport.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\AsyncKeyFrameReader.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\GraphicContext.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\WorldModel.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -96,9 +102,6 @@
     <ClInclude Include="..\Classes\MainScene.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\ObjectContext.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\OptionsMenu.h">
       <Filter>src</Filter>
     </ClInclude>
@@ -136,6 +139,12 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\json_safe.hpp">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\AsyncKeyFrameReader.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\GraphicContext.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

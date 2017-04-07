@@ -15,6 +15,7 @@
     <RootNamespace>test_win32</RootNamespace>
     <Keyword>Win32Proj</Keyword>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <ProjectName>Jevo</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -141,10 +142,11 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
+    <ClCompile Include="..\Classes\AsyncKeyFrameReader.cpp" />
     <ClCompile Include="..\Classes\Common.cpp" />
+    <ClCompile Include="..\Classes\GraphicContext.cpp" />
     <ClCompile Include="..\Classes\LoadingScene.cpp" />
     <ClCompile Include="..\Classes\MainScene.cpp" />
-    <ClCompile Include="..\Classes\ObjectContext.cpp" />
     <ClCompile Include="..\Classes\PartialMap.cpp" />
     <ClCompile Include="..\Classes\PartialMapsManager.cpp" />
     <ClCompile Include="..\Classes\SharedUIData.cpp" />
@@ -153,13 +155,16 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClCompile Include="..\Classes\UIConfig.cpp" />
     <ClCompile Include="..\Classes\Utilities.cpp" />
     <ClCompile Include="..\Classes\Viewport.cpp" />
+    <ClCompile Include="..\Classes\WorldModel.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Classes\AppDelegate.h" />
     <ClInclude Include="..\Classes\AsyncDiffReader.h" />
+    <ClInclude Include="..\Classes\AsyncKeyFrameReader.h" />
     <ClInclude Include="..\Classes\Buffer2D.h" />
     <ClInclude Include="..\Classes\Common.h" />
+    <ClInclude Include="..\Classes\GraphicContext.h" />
     <ClInclude Include="..\Classes\IFullScreenMenu.h" />
     <ClInclude Include="..\Classes\json.hpp" />
     <ClInclude Include="..\Classes\json_safe.hpp" />
@@ -169,7 +174,6 @@ xcopy /Y /Q "$(EngineRoot)external\websockets\prebuilt\win32\*.*" "$(OutDir)"</C
     <ClInclude Include="..\Classes\LoadingScene.h" />
     <ClInclude Include="..\Classes\Logging.h" />
     <ClInclude Include="..\Classes\MainScene.h" />
-    <ClInclude Include="..\Classes\ObjectContext.h" />
     <ClInclude Include="..\Classes\OptionsMenu.h" />
     <ClInclude Include="..\Classes\PartialMap.h" />
     <ClInclude Include="..\Classes\PartialMapsManager.h" />

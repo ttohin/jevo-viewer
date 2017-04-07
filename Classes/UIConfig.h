@@ -25,7 +25,11 @@ namespace jevo
   
   namespace config
   {
+#if defined(CC_PLATFORM_WIN32)
+    const std::string workingFolder = cocos2d::FileUtils::getInstance()->getWritablePath() + "jsons";
+#else
     const std::string workingFolder = cocos2d::FileUtils::getInstance()->getWritablePath() + "jevo";
+#endif
     const float initialScale = 0.1;
     const unsigned int numberOfUpdatesPerTick = 100;
     const float updateTime = 0.05;
